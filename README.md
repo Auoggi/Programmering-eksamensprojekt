@@ -1,2 +1,2 @@
-# Programmering-eksamensprojekt
-Gruppe Adam, August A og Mikkel
+# Programmering Eksamensprojekt
+Gruppe: Adam, August A og Mikkel
