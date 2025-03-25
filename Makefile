@@ -16,13 +16,13 @@ CXX := g++
 
 %.exe %.exe.o: CXX := x86_64-w64-mingw32-g++
 
-$(BUILD_DIR)/%: $(BUILD_DIR) %.o $(DEPS)
+$(BUILD_DIR)/%: $(BUILD_DIR) $(SRC_DIR)/%.o $(DEPS)
 	$(CXX) $(filter-out $(BUILD_DIR), $^) -o $@ $(FLAGS)
 
 %.o: %.cpp
 	$(CXX) -c $(CXXFLAGS) $^ -o $@
 
-$(BUILD_DIR)/%.exe: $(BUILD_DIR) %.exe.o $(DEPS:.o=.exe.o) 
+$(BUILD_DIR)/%.exe: $(BUILD_DIR) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o) 
 	$(CXX) $(filter-out $(BUILD_DIR), $^) -o $@ $(WFLAGS)
 
 %.exe.o: %.cpp
