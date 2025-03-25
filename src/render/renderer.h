@@ -1,3 +1,6 @@
+#ifndef RENDERER_CLASS
+#define RENDERER_CLASS
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -23,3 +26,5 @@ private:
 
     void initRenderData();
 };
+
+#endif

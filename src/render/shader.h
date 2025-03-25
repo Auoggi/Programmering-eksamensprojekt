@@ -1,3 +1,6 @@
+#ifndef SHADER_CLASS
+#define SHADER_CLASS
+
 #include <glad/glad.h>
 
 #include <stdio.h>
@@ -13,3 +16,5 @@ public:
 private:
     void checkCompileErrors(unsigned int object, const char *type);
 };
+
+#endif

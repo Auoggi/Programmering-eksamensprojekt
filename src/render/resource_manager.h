@@ -1,7 +1,7 @@
-#include <glad/glad.h>
+#ifndef RESOURCE_MANAGER_CLASS
+#define RESOURCE_MANAGER_CLASS
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include <glad/glad.h>
 
 #include <map>
 #include <string>
@@ -26,3 +26,5 @@ private:
     static std::map<std::string, Shader> shaders;
     static std::map<std::string, Texture> textures;
 };
+
+#endif
