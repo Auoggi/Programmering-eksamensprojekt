@@ -13,7 +13,7 @@
 class Renderer {
 public:
     Renderer(Shader &shader);
-    ~Renderer(); // Detructor, is called when class is destroyed / deleted
+    ~Renderer(); // Destructor, is called when class is destroyed / deleted
 
     // Create a new renderer suitable for rendering simple textures
     static Renderer* setupRenderer(unsigned int windowWidth, unsigned int windowHeight);
