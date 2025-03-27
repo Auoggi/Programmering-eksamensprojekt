@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "render/resource_manager.h"
+#include "render/renderer.h"
+
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -40,8 +43,21 @@ int main() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    Renderer* renderer = Renderer::setupRenderer(mode->width, mode->height);
+    Texture player = ResourceManager::loadTexture("assets/textures/ball.png", "player");
 
     while(!glfwWindowShouldClose(window)) {
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        renderer->drawTexture(player, glm::vec2(xpos, ypos), glm::vec2(10, 10), 0);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
