@@ -1,9 +1,6 @@
 #include "player.h"
 
-
-Player::Player() : pos(glm::vec2(100, 100)), speed(7) {
-    
-}
+Player::Player() : pos(glm::vec2(100, 100)), speed(7) {}
 
 void Player::processInput(GLFWwindow *window) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -26,6 +23,4 @@ void Player::processInput(GLFWwindow *window) {
     if(glm::length(direction) != 0){
         this->pos += glm::normalize(direction) * this->speed;
     }
-        
-    
 }
