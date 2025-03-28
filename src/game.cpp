@@ -58,7 +58,7 @@ int main() {
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        renderer->drawTexture(playerTexture, player->pos, glm::vec2(100, 100), 0);
+        renderer->drawTexture(playerTexture, player->pos, glm::vec2(25, 25), 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
