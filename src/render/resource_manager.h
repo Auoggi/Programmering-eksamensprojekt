@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 
+#include "shaders/shader_symbols.h"
 #include "texture.h"
 #include "shader.h"
 

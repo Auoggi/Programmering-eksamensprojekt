@@ -9,25 +9,40 @@ BUILD_DIR := .build
 MAIN_FILE := game
 
 CXXFLAGS := -g -I include
-WFLAGS := $(CXXFLAGS) ./include/GLFW/lib-mingw-w64/libglfw3.a -lopengl32 -lgdi32
-FLAGS := $(CXXFLAGS) $$(pkg-config --static --libs glfw3 gl)
+FLAGS := $(CXXFLAGS) $(shell pkg-config --static --libs glfw3 gl)
 DEPS := include/glad/glad.o $(patsubst %.cpp, %.o, $(shell fdfind -e cpp . $(SRC_DIR)))
 CXX := g++
+LD := ld
 
+SHADER_DIR := $(SRC_DIR)/render/shaders
+SHADER_SYMBOLS_FILE := $(SHADER_DIR)/shader_symbols.h
+SHADERS := $(patsubst %.glsl, %.o, $(shell fdfind -e glsl . $(SHADER_DIR)))
+DEPS += $(SHADERS)
+
+%.exe %.exe.o: FLAGS := $(CXXFLAGS) ./include/GLFW/lib-mingw-w64/libglfw3.a -lopengl32 -lgdi32
 %.exe %.exe.o: CXX := x86_64-w64-mingw32-g++
+%.exe %.exe.o: LD := x86_64-w64-mingw32-ld
 
-$(BUILD_DIR)/%: $(BUILD_DIR) $(SRC_DIR)/%.o $(DEPS)
-	$(CXX) $(filter-out $(BUILD_DIR), $^) -o $@ $(FLAGS)
+define compile =
+$(MAKE) $(BUILD_DIR)
+$(CXX) $^ -o $@ $(FLAGS)
+endef
 
-%.o: %.cpp
+$(BUILD_DIR)/%: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.o $(DEPS)
+	$(compile)
+$(BUILD_DIR)/%.exe: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o) 
+	$(compile)
+
+%.o %.exe.o: %.cpp
 	$(CXX) -c $(CXXFLAGS) $^ -o $@
 
-$(BUILD_DIR)/%.exe: $(BUILD_DIR) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o) 
-	$(CXX) $(filter-out $(BUILD_DIR), $^) -o $@ $(WFLAGS)
-
-%.exe.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -o $@
+$(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
+	$(LD) -r -b binary -o $@ $<
 	
+$(SHADER_SYMBOLS_FILE): $(SHADERS)
+	echo "// THIS FILE IS AUTO-GENERATED, DO NOT EDIT\n" > $@
+	nm --defined-only $^ | awk '/_binary_.+_start/ {print "extern char " $$3 "[];";}' >> $@
+
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
@@ -42,5 +57,5 @@ build:
 
 .PHONY: clean
 clean:
-	rm -f $(shell fdfind -I -e o)
-	rm -rf $(BUILD_DIR)
+	$(MAKE) $(SHADER_SYMBOLS_FILE)
+	rm -rf $(BUILD_DIR) $(shell fdfind -I -e o) 
