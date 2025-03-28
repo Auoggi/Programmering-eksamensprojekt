@@ -49,6 +49,8 @@ int main() {
     Texture playerTexture = ResourceManager::loadTexture("assets/textures/ball.png", "player");
     Player *player = new Player();
 
+    Texture obstacle = ResourceManager::loadTexture("assets/textures/ball.png", "obstacle");
+
     while(!glfwWindowShouldClose(window)) {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -58,7 +60,10 @@ int main() {
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        renderer->drawTexture(playerTexture, player->pos, glm::vec2(25, 25), 0);
+        glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(-player->pos.x + width/2, -player->pos.y + height/2, 0));
+        renderer->drawTexture(playerTexture, view, player->pos, glm::vec2(25, 25), 0);
+
+        renderer->drawTexture(obstacle, view, glm::vec2(0, 0), glm::vec2(64, 64), 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
