@@ -1,7 +1,7 @@
 #include "player.h"
 
 
-Player::Player() : pos(glm::vec2(100, 100)), speed(20) {
+Player::Player() : pos(glm::vec2(100, 100)), speed(7) {
     
 }
 
