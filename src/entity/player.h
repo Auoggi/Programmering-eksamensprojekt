@@ -12,7 +12,8 @@ class Player {
 public:
     Texture texture;
     glm::vec2 pos;
-    float speed;
+    float speed, dashSpeed;
+    bool dash;
 
     Player();
 
