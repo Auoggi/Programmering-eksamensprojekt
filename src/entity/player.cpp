@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() : pos(glm::vec2(100, 100)), speed(7) {}
+Player::Player() : pos(glm::vec2(100, 100)), dashSpeed(25), speed(7) {}
 
 void Player::processInput(GLFWwindow *window) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -17,6 +17,11 @@ void Player::processInput(GLFWwindow *window) {
     }
     if(glfwGetKey(window, GLFW_KEY_A)){
         direction += glm::vec2(-1, 0);
+    }
+
+    // Dashing feature
+    if(glfwGetKey(window, GLFW_KEY_SPACE)) {
+        this->pos += glm::normalize(direction) * this->dashSpeed;
     }
 
     // If statement that avoids zero division 
