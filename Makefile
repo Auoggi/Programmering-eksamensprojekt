@@ -24,13 +24,13 @@ DEPS += $(SHADERS)
 %.exe %.exe.o: LD := x86_64-w64-mingw32-ld
 
 define compile =
-$(MAKE) $(BUILD_DIR) $(SHADER_SYMBOLS_FILE)
+$(MAKE) $(BUILD_DIR)
 $(CXX) $^ -o $@ $(FLAGS)
 endef
 
-$(BUILD_DIR)/%: $(SRC_DIR)/%.o $(DEPS)
+$(BUILD_DIR)/%: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.o $(DEPS)
 	$(compile)
-$(BUILD_DIR)/%.exe: $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o) 
+$(BUILD_DIR)/%.exe: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o) 
 	$(compile)
 
 %.o %.exe.o: %.cpp
@@ -40,7 +40,8 @@ $(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
 	$(LD) -r -b binary -o $@ $<
 	
 $(SHADER_SYMBOLS_FILE): $(SHADERS)
-	nm --defined-only $^ | awk '/_binary_.+_start/ {print "extern char " $$3 "[];";}' > $@
+	echo "// THIS FILE IS AUTO-GENERATED, DO NOT EDIT\n" > $@
+	nm --defined-only $^ | awk '/_binary_.+_start/ {print "extern char " $$3 "[];";}' >> $@
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
@@ -56,5 +57,5 @@ build:
 
 .PHONY: clean
 clean:
-	rm -f $(shell fdfind -I -e o)
-	rm -rf $(BUILD_DIR)
+	$(MAKE) $(SHADER_SYMBOLS_FILE)
+	rm -rf $(BUILD_DIR) $(shell fdfind -I -e o) 
