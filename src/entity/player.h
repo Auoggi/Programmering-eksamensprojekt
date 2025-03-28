@@ -13,8 +13,6 @@ public:
 
     void processInput(GLFWwindow *window);
 
-private:
-/* data */
 };
 
 #endif
