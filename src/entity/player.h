@@ -8,6 +8,7 @@ class Player {
 public:
     glm::vec2 pos;
     float speed, dashSpeed;
+    bool dash;
 
     Player();
 
