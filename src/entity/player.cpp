@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() : pos(glm::vec2(100, 100)),dash(true), dashSpeed(150), speed(7) {}
+Player::Player() : pos(glm::vec2(100, 100)),dash(true), dashSpeed(5000), speed(200) {}
 
 void Player::processInput(GLFWwindow *window, std::chrono::duration<float> deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -20,15 +20,13 @@ void Player::processInput(GLFWwindow *window, std::chrono::duration<float> delta
     }
 
     // Dashing feature
-    if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash) {
-        if(glm::length(direction) != 0) {
-            this->pos += glm::normalize(direction) * this->dashSpeed;
-            this->dash = false;
-        } 
+    if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && glm::length(direction) != 0) {
+        this->pos += glm::normalize(direction) * this->dashSpeed * deltaTime.count();
+        this->dash = false;
     }
-
+    
     // If statement that avoids zero division 
-    if(glm::length(direction) != 0) {
-        this->pos += glm::normalize(direction) * this->speed;
+    else if(glm::length(direction) != 0) { 
+        this->pos += glm::normalize(direction) * this->speed * deltaTime.count();
     }
 }
