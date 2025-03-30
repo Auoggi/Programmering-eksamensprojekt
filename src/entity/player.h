@@ -8,6 +8,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <chrono>
+#include <iostream>
+
 class Player {
 public:
     Texture texture;
@@ -17,9 +20,8 @@ public:
 
     Player();
 
-    void processInput(GLFWwindow *window);
-    glm::mat4 getView(int width, int height);
-    void draw(Renderer *renderer, glm::mat4 view);
+    void processInput(GLFWwindow *window, std::chrono::duration<float> deltaTime);
+
 };
 
 #endif
