@@ -23,11 +23,8 @@ void Player::processInput(GLFWwindow *window) {
     if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash) {
         if(glm::length(direction) != 0) {
             this->pos += glm::normalize(direction) * this->dashSpeed;
-        } else {
-            this->pos += glm::vec2(0, -1) * this->dashSpeed;
-        }
-        
-        this->dash = false;
+            this->dash = false;
+        } 
     }
 
     // If statement that avoids zero division 
