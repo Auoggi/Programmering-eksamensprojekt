@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <chrono>
+#include <iostream>
+
 #include "render/resource_manager.h"
 #include "render/renderer.h"
 #include "entity/player.h"
@@ -49,11 +52,18 @@ int main() {
     Texture playerTexture = ResourceManager::loadTexture("assets/textures/ball.png", "player");
     Player *player = new Player();
 
+    using Clock = std::chrono::high_resolution_clock;
+    auto lastTime = Clock::now();
+
     while(!glfwWindowShouldClose(window)) {
+        auto currentTime = Clock::now();
+        std::chrono::duration<float> deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         
-        player->processInput(window);
+        player->processInput(window, deltaTime);
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);

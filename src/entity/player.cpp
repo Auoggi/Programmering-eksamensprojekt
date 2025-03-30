@@ -2,7 +2,7 @@
 
 Player::Player() : pos(glm::vec2(100, 100)),dash(true), dashSpeed(150), speed(7) {}
 
-void Player::processInput(GLFWwindow *window) {
+void Player::processInput(GLFWwindow *window, std::chrono::duration<float> deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
 
     // If statements that detects user input

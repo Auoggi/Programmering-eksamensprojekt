@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
+#include <chrono>
+#include <iostream>
+
 class Player {
 public:
     glm::vec2 pos;
@@ -12,7 +15,7 @@ public:
 
     Player();
 
-    void processInput(GLFWwindow *window);
+    void processInput(GLFWwindow *window, std::chrono::duration<float> deltaTime);
 
 };
 
