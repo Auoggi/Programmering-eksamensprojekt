@@ -49,11 +49,19 @@ int main() {
 
     Texture obstacle = ResourceManager::loadTexture("assets/textures/ball.png", "obstacle");
 
+    double currentTime = glfwGetTime();
+    double lastTime = currentTime;
+    double deltaTime;
+
     while(!glfwWindowShouldClose(window)) {
+        currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         
-        player->processInput(window);
+        player->processInput(window, deltaTime);
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT);

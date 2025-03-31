@@ -12,11 +12,12 @@ class Player {
 public:
     Texture texture;
     glm::vec2 pos;
-    float speed;
+    float speed, dashSpeed, dashCooldown;
+    bool dash;
 
     Player();
 
-    void processInput(GLFWwindow *window);
+    void processInput(GLFWwindow *window, double deltaTime);
     glm::mat4 getView(int width, int height);
     void draw(Renderer *renderer, glm::mat4 view);
 };
