@@ -19,17 +19,16 @@ void Player::processInput(GLFWwindow *window, std::chrono::duration<float> delta
         direction += glm::vec2(-1, 0);
     }
 
-    // Dashing feature
-    if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && glm::length(direction) != 0) {
-        this->pos += glm::normalize(direction) * this->dashSpeed * deltaTime.count();
-        this->dash = false;
-        this->dashTime = 0.0f;
-    }
-    
-    // If statement that avoids zero division 
-    else if(glm::length(direction) != 0) { 
-        this->pos += glm::normalize(direction) * this->speed * deltaTime.count();
-    }
+    // Dashing feature and player movement
+    if(glm::length(direction) != 0)
+        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash) {
+            this->pos += glm::normalize(direction) * this->dashSpeed * deltaTime.count();
+            this->dash = false;
+            this->dashTime = 0.0f;
+        }
+        else { 
+            this->pos += glm::normalize(direction) * this->speed * deltaTime.count();
+        }
 
     // Dash cooldown management
     if(!this->dash) {
