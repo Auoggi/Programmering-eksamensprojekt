@@ -7,7 +7,6 @@
 #include <stdio.h>
 
 #include <chrono>
-#include <iostream>
 
 #include "render/resource_manager.h"
 #include "render/renderer.h"
