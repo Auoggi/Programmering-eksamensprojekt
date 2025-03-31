@@ -20,7 +20,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     }
 
     // Dashing feature and player movement
-    if(glm::length(direction) != 0)
+    if(glm::length(direction) != 0) {
         if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash) {
             this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
             this->dash = false;
@@ -28,6 +28,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
         } else { 
             this->pos += glm::normalize(direction) * this->speed * (float) deltaTime;
         }
+    }
 
     // Dash cooldown management
     if(!this->dash) {
