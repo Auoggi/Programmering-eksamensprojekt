@@ -24,3 +24,9 @@ void Player::processInput(GLFWwindow *window) {
         this->pos += glm::normalize(direction) * this->speed;
     }
 }
+
+glm::mat4 Player::getView(int width, int height) {
+    glm::mat4 view = glm::translate(glm::mat4(1.f), glm::vec3(-this->pos.x + width/2, -this->pos.y + height/2, 0));
+
+    return view;
+}
