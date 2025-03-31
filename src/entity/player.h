@@ -18,7 +18,6 @@ public:
     Player();
 
     void processInput(GLFWwindow *window, double deltaTime);
-
 };
 
 #endif
