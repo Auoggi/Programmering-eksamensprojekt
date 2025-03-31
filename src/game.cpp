@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "render/resource_manager.h"
 #include "render/renderer.h"
 #include "entity/player.h"
 
@@ -46,7 +45,6 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
-    Texture playerTexture = ResourceManager::loadTexture("assets/textures/ball.png", "player");
     Player *player = new Player();
 
     Texture obstacle = ResourceManager::loadTexture("assets/textures/ball.png", "obstacle");
@@ -61,7 +59,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         
         glm::mat4 view = player->getView(width, height);
-        renderer->drawTexture(playerTexture, view, player->pos, glm::vec2(25, 25), 0);
+        player->draw(renderer, view);
 
         renderer->drawTexture(obstacle, view, glm::vec2(0, 0), glm::vec2(64, 64), 0);
 
