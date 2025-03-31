@@ -12,7 +12,7 @@ class Player {
 public:
     Texture texture;
     glm::vec2 pos;
-    float speed, dashSpeed, dashCooldown, dashTime;
+    float speed, dashSpeed, dashCooldown;
     bool dash;
 
     Player();
