@@ -10,7 +10,7 @@ MAIN_FILE := game
 
 CXXFLAGS := -g -I include
 FLAGS := $(CXXFLAGS) $(shell pkg-config --static --libs glfw3 gl)
-DEPS := include/glad/glad.o $(patsubst %.cpp, %.o, $(shell fdfind -e cpp . $(SRC_DIR)))
+DEPS := include/glad/glad.o $(patsubst %.cpp, %.o, $(shell fdfind -e cpp -e h . $(SRC_DIR)))
 CXX := g++
 LD := ld
 
@@ -25,7 +25,7 @@ DEPS += $(SHADERS)
 
 define compile =
 $(MAKE) $(BUILD_DIR)
-$(CXX) $^ -o $@ $(FLAGS)
+$(CXX) $(filter-out %.h, $^) -o $@ $(FLAGS)
 endef
 
 $(BUILD_DIR)/%: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.o $(DEPS)
