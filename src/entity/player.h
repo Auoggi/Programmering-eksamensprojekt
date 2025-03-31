@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Player {
 public:
@@ -12,7 +13,7 @@ public:
     Player();
 
     void processInput(GLFWwindow *window);
-
+    glm::mat4 getView(int width, int height);
 };
 
 #endif
