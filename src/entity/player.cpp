@@ -15,7 +15,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     if(glfwGetKey(window, GLFW_KEY_D)) {
         direction += glm::vec2(1, 0);
     }
-    if(glfwGetKey(window, GLFW_KEY_A)){
+    if(glfwGetKey(window, GLFW_KEY_A)) {
         direction += glm::vec2(-1, 0);
     }
 
