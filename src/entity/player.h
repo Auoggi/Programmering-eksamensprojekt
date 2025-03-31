@@ -7,13 +7,12 @@
 class Player {
 public:
     glm::vec2 pos;
-    float speed, dashSpeed;
+    float speed, dashSpeed, dashCooldown;
     bool dash;
 
     Player();
 
-    void processInput(GLFWwindow *window);
-
+    void processInput(GLFWwindow *window, double deltaTime);
 };
 
 #endif
