@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <chrono>
-
 #include "render/resource_manager.h"
 #include "render/renderer.h"
 #include "entity/player.h"
@@ -50,12 +48,13 @@ int main() {
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
     Player *player = new Player();
 
-    using Clock = std::chrono::high_resolution_clock;
-    auto lastTime = Clock::now();
+    double currentTime = glfwGetTime();
+    double lastTime = currentTime;
+    double deltaTime;
 
     while(!glfwWindowShouldClose(window)) {
-        auto currentTime = Clock::now();
-        std::chrono::duration<float> deltaTime = currentTime - lastTime;
+        currentTime = glfwGetTime();
+        deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         
         int width, height;

@@ -8,8 +8,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <chrono>
-
 class Player {
 public:
     Texture texture;
@@ -19,7 +17,7 @@ public:
 
     Player();
 
-    void processInput(GLFWwindow *window, std::chrono::duration<float> deltaTime);
+    void processInput(GLFWwindow *window, double deltaTime);
 
 };
 
