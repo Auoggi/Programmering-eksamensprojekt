@@ -28,9 +28,9 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
  
-    GLFWmonitor* primary = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(primary);
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Game", primary, NULL);
+    GLFWmonitor *primary = glfwGetPrimaryMonitor();
+    const GLFWvidmode *mode = glfwGetVideoMode(primary);
+    GLFWwindow *window = glfwCreateWindow(mode->width, mode->height, "Game", primary, NULL);
     if(!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -57,15 +57,15 @@ int main() {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
+        int screenWidth, screenHeight;
+        glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
         
         player->processInput(window, deltaTime);
 
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glm::mat4 view = player->getView(width, height);
+        glm::mat4 view = player->getView(screenWidth, screenHeight);
         player->draw(renderer, view);
 
         renderer->drawTexture(obstacle, view, glm::vec2(0, 0), glm::vec2(64, 64), 0);
