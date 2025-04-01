@@ -10,11 +10,12 @@
 
 class Entity {
 public:
+    int width, height;
     Texture texture;
     glm::vec2 pos;
     float speed;
 
-    Entity(const char *texture, const char *textureName);
+    Entity(const char *texture, const char *textureName, int width, int height);
 
     void draw(Renderer *renderer, glm::mat4 view);
 };

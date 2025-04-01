@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player"), dash(true), dashSpeed(5000), dashCooldown(5.0f) {}
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), dashSpeed(5000), dashCooldown(5.0f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -40,6 +40,6 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     }
 }
 
-glm::mat4 Player::getView(int width, int height) {
-    return glm::translate(glm::mat4(1.f), glm::vec3(-this->pos.x + width/2, -this->pos.y + height/2, 0));
+glm::mat4 Player::getView(int screenWidth, int screenHeight) {
+    return glm::translate(glm::mat4(1.f), glm::vec3(-this->pos.x + screenWidth/2, -this->pos.y + screenHeight/2, 0));
 }
