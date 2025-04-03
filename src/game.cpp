@@ -8,6 +8,7 @@
 
 #include "render/renderer.h"
 #include "entity/player.h"
+#include "grid/grid.h"
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -52,6 +53,9 @@ int main() {
     double currentTime = glfwGetTime();
     double lastTime = currentTime;
     double deltaTime;
+
+    const int tileSize= 64;
+    Grid *grid = new Grid(tileSize);
 
     while(!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
