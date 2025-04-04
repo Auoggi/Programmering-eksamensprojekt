@@ -17,7 +17,7 @@ LD := ld
 SHADER_DIR := $(SRC_DIR)/render/shaders
 SHADER_SYMBOLS_FILE := $(SHADER_DIR)/shader_symbols.h
 SHADERS := $(patsubst %.glsl, %.o, $(shell fdfind -e glsl . $(SHADER_DIR)))
-DEPS += $(SHADERS)
+DEPS += $(SHADERS) $(SHADER_SYMBOLS_FILE)
 
 %.exe %.exe.o: FLAGS := $(CXXFLAGS) ./include/GLFW/lib-mingw-w64/libglfw3.a -lopengl32 -lgdi32
 %.exe %.exe.o: CXX := x86_64-w64-mingw32-g++
@@ -39,9 +39,10 @@ $(BUILD_DIR)/%.exe: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o)
 $(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
 	$(LD) -r -b binary -o $@ $<
 	
+// TODO: shorter names and precalculate size
 $(SHADER_SYMBOLS_FILE): $(SHADERS)
 	echo "// THIS FILE IS AUTO-GENERATED, DO NOT EDIT\n" > $@
-	nm --defined-only $^ | awk '/_binary_.+_start/ {print "extern char " $$3 "[];";}' >> $@
+	nm --defined-only $^ | awk '/_binary_.+(_end|_start)/ {print "extern char " $$3 "[];";}' >> $@
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
