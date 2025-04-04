@@ -12,7 +12,7 @@ public:
     Shader() {}
 
     void use();
-    void compile(const char *vertexCode, const char *fragmentCode);
+    void compile(const char *vertexCode, int vertexSize, const char *fragmentCode, int fragmentSize);
 private:
     void checkCompileErrors(unsigned int object, const char *type);
 };
