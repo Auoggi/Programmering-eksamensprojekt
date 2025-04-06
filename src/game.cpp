@@ -58,7 +58,7 @@ int main() {
     const int tileSize = 64;
     Grid *grid = new Grid(tileSize);
 
-    // --- Temporary grid rendering part 1, TODO: fix non-centered y-axis ---
+    // --- Temporary grid rendering part 1 ---
     Shader grid_d = ResourceManager::setShader(
         _binary_src_render_shaders_grid_vertex_glsl_start, 
         _binary_src_render_shaders_grid_vertex_glsl_end - _binary_src_render_shaders_grid_vertex_glsl_start,
@@ -106,7 +106,8 @@ int main() {
         glUniform2f(glGetUniformLocation(grid_d.ID, "screenSize"), screenWidth, screenHeight);
 
         glUniformMatrix4fv(glGetUniformLocation(grid_d.ID, "view"), 1, false, glm::value_ptr(view));
-        glUniform1f(glGetUniformLocation(grid_d.ID, "u_tileSize"), 64.f);
+        glUniform1f(glGetUniformLocation(grid_d.ID, "tileSize"), 64.f);
+        glUniform1f(glGetUniformLocation(grid_d.ID, "screenHeight"), (float) screenHeight);
         
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
