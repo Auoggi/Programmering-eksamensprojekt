@@ -39,10 +39,18 @@ $(BUILD_DIR)/%.exe: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o)
 $(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
 	$(LD) -r -b binary -o $@ $<
 	
-// TODO: shorter names and precalculate size
 $(SHADER_SYMBOLS_FILE): $(SHADERS)
 	echo "// THIS FILE IS AUTO-GENERATED, DO NOT EDIT\n" > $@
-	nm --defined-only $^ | awk '/_binary_.+(_end|_start)/ {print "extern char " $$3 "[];";}' >> $@
+	nm --defined-only $^ | grep "_end" | gawk 'match($$0, /_binary_.+_glsl/) { \
+		print "namespace shader_symbols {"; \
+		m = "shader_symbols::" substr($$0, RSTART, RLENGTH); \
+		print "\textern char " m "_start[];"; \
+		print "\textern char " m "_end[];\n}"; \
+		s = gensub(/shader_symbols::_binary_src_render_shaders_/, "", "g", m); \
+		print "const int " s "_size = " m "_end - " m "_start;"; \
+		print "const char *" s " = " m "_start;"; \
+		print "#define " toupper(s) " " s ", " s "_size\n"; \
+	}' >> $@
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
@@ -58,5 +66,5 @@ build:
 
 .PHONY: clean
 clean:
-	$(MAKE) $(SHADER_SYMBOLS_FILE)
+	$(MAKE) -B $(SHADER_SYMBOLS_FILE)
 	rm -rf $(BUILD_DIR) $(shell fdfind -I -e o) 

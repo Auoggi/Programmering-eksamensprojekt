@@ -1,14 +1,6 @@
 #include "grid.h"
 
-Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileSize) {
-    this->shader = ResourceManager::setShader(
-        _binary_src_render_shaders_grid_vertex_glsl_start, 
-        _binary_src_render_shaders_grid_vertex_glsl_end - _binary_src_render_shaders_grid_vertex_glsl_start,
-        _binary_src_render_shaders_grid_fragment_glsl_start,
-        _binary_src_render_shaders_grid_fragment_glsl_end - _binary_src_render_shaders_grid_fragment_glsl_start,
-        "grid"
-    );
-    
+Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileSize), shader(ResourceManager::setShader(GRID_VERTEX_GLSL, GRID_FRAGMENT_GLSL, "grid")) {
     float vertices[] = {
         0, 0,  
         screenWidth, 0,  
