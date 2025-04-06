@@ -13,9 +13,12 @@ class Grid {
 public:
     const int tileSize;
     std::map<glm::ivec2, std::vector<Entity>> entityMap;
+    Shader shader;
+    GLuint VAO;
 
-    Grid(const int tileSize);
+    Grid(const int tileSize, float screenWidth, float screenHeight);
     glm::ivec2 getTileCoords(Entity entity);
+    void draw(glm::mat4 view, int screenWidth, int screenHeight);
 };
 
 #endif

@@ -56,34 +56,7 @@ int main() {
     double deltaTime;
 
     const int tileSize = 64;
-    Grid *grid = new Grid(tileSize);
-
-    // --- Temporary grid rendering part 1 ---
-    Shader grid_d = ResourceManager::setShader(
-        _binary_src_render_shaders_grid_vertex_glsl_start, 
-        _binary_src_render_shaders_grid_vertex_glsl_end - _binary_src_render_shaders_grid_vertex_glsl_start,
-        _binary_src_render_shaders_grid_fragment_glsl_start,
-        _binary_src_render_shaders_grid_fragment_glsl_end - _binary_src_render_shaders_grid_fragment_glsl_start,
-        "grid"
-    );
-    
-    float vertices[] = {
-        0, 0,  
-        (float) mode->width, 0,  
-        0, (float) mode->height,  
-        (float) mode->width, (float) mode->height
-    };
-
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // --- end of part 1 ---
+    Grid *grid = new Grid(tileSize, (float) mode->width, (float) mode->height);
 
     while(!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
@@ -100,18 +73,7 @@ int main() {
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // --- Temporary grid rendering part 2 ---
-        grid_d.use();
-
-        glUniform2f(glGetUniformLocation(grid_d.ID, "screenSize"), screenWidth, screenHeight);
-
-        glUniformMatrix4fv(glGetUniformLocation(grid_d.ID, "view"), 1, false, glm::value_ptr(view));
-        glUniform1f(glGetUniformLocation(grid_d.ID, "tileSize"), 64.f);
-        glUniform1f(glGetUniformLocation(grid_d.ID, "screenHeight"), (float) screenHeight);
-        
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        // --- end of part 2 ---
+        grid->draw(view, screenWidth, screenHeight);
 
         player->draw(renderer, view);
 
