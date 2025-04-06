@@ -46,7 +46,7 @@ $(SHADER_SYMBOLS_FILE): $(SHADERS)
 		m = "shader_symbols::" substr($$0, RSTART, RLENGTH); \
 		print "\textern char " m "_start[];"; \
 		print "\textern char " m "_end[];\n}"; \
-		s = gensub(/shader_symbols::_binary_src_render_shaders_/, "", "g", m); \
+		s = gensub(/shader_symbols::_binary_$(strip $(subst /,_, $(SHADER_DIR)))_/, "", "g", m); \
 		print "const int " s "_size = " m "_end - " m "_start;"; \
 		print "const char *" s " = " m "_start;"; \
 		print "#define " toupper(s) " " s ", " s "_size\n"; \
