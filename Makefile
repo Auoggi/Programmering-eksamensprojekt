@@ -42,14 +42,15 @@ $(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
 $(SHADER_SYMBOLS_FILE): $(SHADERS)
 	echo "// THIS FILE IS AUTO-GENERATED, DO NOT EDIT\n" > $@
 	nm --defined-only $^ | grep "_end" | gawk 'match($$0, /_binary_.+_glsl/) { \
+		m = substr($$0, RSTART, RLENGTH); \
 		print "namespace shader_symbols {"; \
-		m = "shader_symbols::" substr($$0, RSTART, RLENGTH); \
-		print "\textern char " m "_start[];"; \
-		print "\textern char " m "_end[];\n}"; \
-		s = gensub(/shader_symbols::_binary_$(strip $(subst /,_, $(SHADER_DIR)))_/, "", "g", m); \
-		print "const int " s "_size = " m "_end - " m "_start;"; \
-		print "const char *" s " = " m "_start;"; \
-		print "#define " toupper(s) " " s ", " s "_size\n"; \
+		print "\textern \"C\" char " m "_start[];"; \
+		print "\textern \"C\" char " m "_end[];\n}"; \
+		s = gensub(/_binary_$(strip $(subst /,_, $(SHADER_DIR)))_/, "", "g", m); \
+		m = "shader_symbols::" m; \
+		print "#define " toupper(s "_start") " " m "_start"; \
+		print "#define " toupper(s "_size") " " m "_end - " m "_start"; \
+		print "#define " toupper(s) " " toupper(s "_start") ", " toupper(s "_size") "\n"; \
 	}' >> $@
 
 $(BUILD_DIR):
