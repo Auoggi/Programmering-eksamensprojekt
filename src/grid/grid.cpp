@@ -26,11 +26,9 @@ glm::ivec2 Grid::getTileCoords(Entity entity) {
 void Grid::draw(glm::mat4 view, int screenWidth, int screenHeight) {
     this->shader.use();
 
-    glUniform2f(glGetUniformLocation(this->shader.ID, "screenSize"), screenWidth, screenHeight);
-
     glUniformMatrix4fv(glGetUniformLocation(this->shader.ID, "view"), 1, false, glm::value_ptr(view));
     glUniform1f(glGetUniformLocation(this->shader.ID, "tileSize"), 64.f);
-    glUniform1f(glGetUniformLocation(this->shader.ID, "screenHeight"), (float) screenHeight);
+    glUniform2f(glGetUniformLocation(this->shader.ID, "screenSize"), screenWidth, screenHeight);
     
     glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
