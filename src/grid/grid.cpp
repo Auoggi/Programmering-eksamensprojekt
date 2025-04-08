@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "../entity/entity.h" // Import Entity to define Entity class after the forward declaration
 
 Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileSize), shader(ResourceManager::setShader(GRID_VERTEX_GLSL, GRID_FRAGMENT_GLSL, "grid")) {
     float vertices[] = {
@@ -17,6 +18,13 @@ Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileS
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+}
+
+std::shared_ptr<std::vector<Entity*>> Grid::getEntityList(const glm::ivec2& pos) {
+    if (entityMap.find(pos) == entityMap.end()) {
+        entityMap[pos] = std::make_shared<std::vector<Entity*>>();
+    }
+    return entityMap[pos];
 }
 
 void Grid::draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY) {

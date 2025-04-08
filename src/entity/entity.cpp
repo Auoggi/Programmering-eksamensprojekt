@@ -4,30 +4,32 @@ Entity::Entity(const char *texture, const char *textureName, int width, int heig
     this->texture = ResourceManager::loadTexture(texture, textureName);
 }
 
-glm::ivec2 Entity::getTileCoords(int tileSize) {
-    return glm::ivec2(floor(this->pos.x / tileSize), floor(this->pos.y / tileSize));
+glm::ivec2 Entity::getTileCoords(Grid *grid) {
+    return glm::ivec2(floor(this->pos.x / grid->tileSize), floor(this->pos.y / grid->tileSize));
 }
 
 void Entity::tick(Grid *grid) {
     this->prevTilePos = this->currTilePos;
-    this->currTilePos = getTileCoords(grid->tileSize);
+    this->currTilePos = getTileCoords(grid);
 
     // Check if entity has moved
     if(this->prevTilePos != this->currTilePos) {
         // Get pointer to EntityVector at previous tile position from grid->entityMap
-        std::vector<Entity*> *tile = grid->entityMap->at(this->prevTilePos); // at() functions as [] would but on pointers
-        for(int i = 0; i < tile->size(); i++) {
-            if(tile->at(i) == this) {
-                tile->erase(tile->begin() + i); // Erase self from previous tile posistion
-                break;
+        std::shared_ptr<std::vector<Entity*>> tile = grid->getEntityList(this->prevTilePos);
+        if(tile->size() > 1) {
+            for(int i = 0; i < tile->size(); i++) {
+                if(tile->at(i) == this) {
+                    tile->erase(tile->begin() + i); // Erase self from previous tile posistion
+                    break;
+                }
             }
+        } else {
+            grid->entityMap.erase(this->prevTilePos); // Delete list if this was the last or nothing was in it
         }
         
         // Add self to new tile position
-        grid->entityMap->at(this->currTilePos)->push_back(this);
+        grid->getEntityList(this->currTilePos)->push_back(this);
     }
-
-
 }
 
 void Entity::draw(Renderer *renderer, glm::mat4 view) {
