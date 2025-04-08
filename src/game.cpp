@@ -55,6 +55,7 @@ int main() {
     double lastTime = currentTime;
     double deltaTime;
 
+    // init grid
     const int tileSize = 64;
     Grid *grid = new Grid(tileSize, (float) mode->width, (float) mode->height);
 
