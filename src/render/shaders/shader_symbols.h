@@ -1,2 +1,18 @@
 // THIS FILE IS AUTO-GENERATED, DO NOT EDIT
 
+namespace shader_symbols {
+	extern "C" char _binary_src_render_shaders_grid_fragment_glsl_start[];
+	extern "C" char _binary_src_render_shaders_grid_fragment_glsl_end[];
+}
+#define GRID_FRAGMENT_GLSL_START shader_symbols::_binary_src_render_shaders_grid_fragment_glsl_start
+#define GRID_FRAGMENT_GLSL_SIZE shader_symbols::_binary_src_render_shaders_grid_fragment_glsl_end - shader_symbols::_binary_src_render_shaders_grid_fragment_glsl_start
+#define GRID_FRAGMENT_GLSL GRID_FRAGMENT_GLSL_START, GRID_FRAGMENT_GLSL_SIZE
+
+namespace shader_symbols {
+	extern "C" char _binary_src_render_shaders_grid_vertex_glsl_start[];
+	extern "C" char _binary_src_render_shaders_grid_vertex_glsl_end[];
+}
+#define GRID_VERTEX_GLSL_START shader_symbols::_binary_src_render_shaders_grid_vertex_glsl_start
+#define GRID_VERTEX_GLSL_SIZE shader_symbols::_binary_src_render_shaders_grid_vertex_glsl_end - shader_symbols::_binary_src_render_shaders_grid_vertex_glsl_start
+#define GRID_VERTEX_GLSL GRID_VERTEX_GLSL_START, GRID_VERTEX_GLSL_SIZE
+

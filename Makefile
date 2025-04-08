@@ -17,7 +17,7 @@ LD := ld
 SHADER_DIR := $(SRC_DIR)/render/shaders
 SHADER_SYMBOLS_FILE := $(SHADER_DIR)/shader_symbols.h
 SHADERS := $(patsubst %.glsl, %.o, $(shell fdfind -e glsl . $(SHADER_DIR)))
-DEPS += $(SHADERS)
+DEPS += $(SHADERS) $(SHADER_SYMBOLS_FILE)
 
 %.exe %.exe.o: FLAGS := $(CXXFLAGS) ./include/GLFW/lib-mingw-w64/libglfw3.a -lopengl32 -lgdi32
 %.exe %.exe.o: CXX := x86_64-w64-mingw32-g++
@@ -41,7 +41,17 @@ $(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
 	
 $(SHADER_SYMBOLS_FILE): $(SHADERS)
 	echo "// THIS FILE IS AUTO-GENERATED, DO NOT EDIT\n" > $@
-	nm --defined-only $^ | awk '/_binary_.+_start/ {print "extern char " $$3 "[];";}' >> $@
+	nm --defined-only $^ | grep "_end" | gawk 'match($$0, /_binary_.+_glsl/) { \
+		m = substr($$0, RSTART, RLENGTH); \
+		print "namespace shader_symbols {"; \
+		print "\textern \"C\" char " m "_start[];"; \
+		print "\textern \"C\" char " m "_end[];\n}"; \
+		s = gensub(/_binary_$(strip $(subst /,_, $(SHADER_DIR)))_/, "", "g", m); \
+		m = "shader_symbols::" m; \
+		print "#define " toupper(s "_start") " " m "_start"; \
+		print "#define " toupper(s "_size") " " m "_end - " m "_start"; \
+		print "#define " toupper(s) " " toupper(s "_start") ", " toupper(s "_size") "\n"; \
+	}' >> $@
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
@@ -57,5 +67,5 @@ build:
 
 .PHONY: clean
 clean:
-	$(MAKE) $(SHADER_SYMBOLS_FILE)
+	$(MAKE) -B $(SHADER_SYMBOLS_FILE)
 	rm -rf $(BUILD_DIR) $(shell fdfind -I -e o) 

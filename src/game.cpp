@@ -48,14 +48,15 @@ int main() {
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
     Player *player = new Player();
 
-    Texture obstacle = ResourceManager::loadTexture("assets/textures/ball.png", "obstacle");
+    Entity *obstacle = new Entity("assets/textures/ball64.png", "obstacle", 64, 64);
+    obstacle->pos = glm::vec2(96, 96);
 
     double currentTime = glfwGetTime();
     double lastTime = currentTime;
     double deltaTime;
 
-    const int tileSize= 64;
-    Grid *grid = new Grid(tileSize);
+    const int tileSize = 64;
+    Grid *grid = new Grid(tileSize, (float) mode->width, (float) mode->height);
 
     while(!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
@@ -67,13 +68,16 @@ int main() {
         
         player->processInput(window, deltaTime);
 
+        glm::mat4 view = player->getView(screenWidth, screenHeight);
+
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
-        
-        glm::mat4 view = player->getView(screenWidth, screenHeight);
+
+        grid->draw(view, screenWidth, screenHeight, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
+
         player->draw(renderer, view);
 
-        renderer->drawTexture(obstacle, view, glm::vec2(0, 0), glm::vec2(64, 64), 0);
+        obstacle->draw(renderer, view);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
