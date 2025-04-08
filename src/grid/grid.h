@@ -18,7 +18,7 @@ public:
 
     Grid(const int tileSize, float screenWidth, float screenHeight);
     glm::ivec2 getTileCoords(Entity entity);
-    void draw(glm::mat4 view, int screenWidth, int screenHeight);
+    void draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY);
 };
 
 #endif

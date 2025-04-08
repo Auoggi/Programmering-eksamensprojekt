@@ -73,10 +73,7 @@ int main() {
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        grid->shader.use();
-        glUniform2f(glGetUniformLocation(grid->shader.ID, "centerTile"), floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
-
-        grid->draw(view, screenWidth, screenHeight);
+        grid->draw(view, screenWidth, screenHeight, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
 
         player->draw(renderer, view);
 
