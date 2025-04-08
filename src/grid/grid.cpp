@@ -19,10 +19,6 @@ Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileS
     glEnableVertexAttribArray(0);
 }
 
-glm::ivec2 Grid::getTileCoords(Entity entity) {
-    return glm::ivec2(floor(entity.pos.x / this->tileSize), floor(entity.pos.y / this->tileSize));
-}
-
 void Grid::draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY) {
     this->shader.use();
 

@@ -12,12 +12,11 @@
 class Grid {
 public:
     const int tileSize;
-    std::map<glm::ivec2, std::vector<Entity>> entityMap;
+    std::map<glm::ivec2, std::vector<Entity*>*> *entityMap;
     Shader shader;
-    GLuint VAO;
+    GLuint VAO; // OpenGL unsigned integer
 
     Grid(const int tileSize, float screenWidth, float screenHeight);
-    glm::ivec2 getTileCoords(Entity entity);
     void draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY);
 };
 
