@@ -19,7 +19,7 @@ public:
 
     Entity(const char *texture, const char *textureName, int width, int height);
 
-    glm::ivec2 getTileCoords(int tileSize);
+    glm::ivec2 getTileCoords(Grid *grid);
 
     void tick(Grid *grid);
     void draw(Renderer *renderer, glm::mat4 view);
