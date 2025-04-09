@@ -71,14 +71,11 @@ int main() {
         player->processInput(window, deltaTime);
 
         glm::mat4 view = player->getView(screenWidth, screenHeight);
-
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
         grid->draw(view, screenWidth, screenHeight, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
-
-        player->draw(renderer, view);
-
+        player->draw(renderer, view);       
         obstacle->draw(renderer, view);
 
         glfwSwapBuffers(window);
