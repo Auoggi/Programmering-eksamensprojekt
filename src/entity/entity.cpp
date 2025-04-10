@@ -16,6 +16,7 @@ void Entity::tick(Grid *grid) {
     if(this->prevTilePos != this->currTilePos) {
         // Get pointer to EntityVector at previous tile position from grid->entityMap
         std::shared_ptr<std::vector<Entity*>> tile = grid->getEntityList(this->prevTilePos);
+        // tile->size() gets entity count of previous tile
         if(tile->size() > 1) {
             for(int i = 0; i < tile->size(); i++) {
                 if(tile->at(i) == this) {
@@ -24,7 +25,7 @@ void Entity::tick(Grid *grid) {
                 }
             }
         } else {
-            grid->entityMap.erase(this->prevTilePos); // Delete list if this was the last or nothing was in it
+            grid->entityMap.erase(this->prevTilePos); // Delete list if this was the last entity or nothing was in it
         }
         
         // Add self to new tile position
