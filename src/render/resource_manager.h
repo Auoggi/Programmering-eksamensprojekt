@@ -17,6 +17,7 @@ class ResourceManager {
 public:
     static Shader loadShader(const char *vertexFile, const char *fragmentFile, std::string name);
     static Shader setShader(const char *vertexCode, const char *fragmentCode, std::string name);
+    static Shader setShader(const char *vertexCode, int vertexSize, const char *fragmentCode, int fragmentSize, std::string name);
     static Shader getShader(std::string name);
 
     static Texture loadTexture(const char *file, std::string name);

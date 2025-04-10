@@ -4,16 +4,16 @@ void Shader::use() {
     glUseProgram(this->ID);
 }
 
-void Shader::compile(const char *vertexCode, const char *fragmentCode) {
+void Shader::compile(const char *vertexCode, int vertexSize, const char *fragmentCode, int fragmentSize) {
     unsigned int sVertex, sFragment;
     // vertex Shader
     sVertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(sVertex, 1, &vertexCode, NULL);
+    glShaderSource(sVertex, 1, &vertexCode, (GLint*) &vertexSize);
     glCompileShader(sVertex);
     checkCompileErrors(sVertex, "VERTEX");
     // fragment Shader
     sFragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(sFragment, 1, &fragmentCode, NULL);
+    glShaderSource(sFragment, 1, &fragmentCode, (GLint*) &fragmentSize);
     glCompileShader(sFragment);
     checkCompileErrors(sFragment, "FRAGMENT");
     // shader program

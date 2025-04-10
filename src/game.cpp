@@ -8,6 +8,7 @@
 
 #include "render/renderer.h"
 #include "entity/player.h"
+#include "grid/grid.h"
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -27,9 +28,9 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
  
-    GLFWmonitor* primary = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(primary);
-    GLFWwindow* window = glfwCreateWindow(mode->width, mode->height, "Game", primary, NULL);
+    GLFWmonitor *primary = glfwGetPrimaryMonitor();
+    const GLFWvidmode *mode = glfwGetVideoMode(primary);
+    GLFWwindow *window = glfwCreateWindow(mode->width, mode->height, "Game", primary, NULL);
     if(!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -47,29 +48,34 @@ int main() {
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
     Player *player = new Player();
 
-    Texture obstacle = ResourceManager::loadTexture("assets/textures/ball.png", "obstacle");
+    Entity *obstacle = new Entity("assets/textures/ball64.png", "obstacle", 64, 64);
+    obstacle->pos = glm::vec2(96, 96);
 
     double currentTime = glfwGetTime();
     double lastTime = currentTime;
     double deltaTime;
+
+    // init grid
+    const int tileSize = 64;
+    Grid *grid = new Grid(tileSize, (float) mode->width, (float) mode->height);
 
     while(!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
+        int screenWidth, screenHeight;
+        glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
         
         player->processInput(window, deltaTime);
 
-        glViewport(0, 0, width, height);
+        glm::mat4 view = player->getView(screenWidth, screenHeight);
+        glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
-        
-        glm::mat4 view = player->getView(width, height);
-        player->draw(renderer, view);
 
-        renderer->drawTexture(obstacle, view, glm::vec2(0, 0), glm::vec2(64, 64), 0);
+        grid->draw(view, screenWidth, screenHeight, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
+        player->draw(renderer, view);       
+        obstacle->draw(renderer, view);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
