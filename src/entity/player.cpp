@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
-                            minDashSpeed(1500), maxDashSpeed(2000),dashCooldown(5.0f), dashTimer(0.0f), dashDuration(0.2f) {}
+                            minDashSpeed(200), maxDashSpeed(800), dashCooldown(5.0f), dashTimer(0.0f), dashDuration(0.3f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
