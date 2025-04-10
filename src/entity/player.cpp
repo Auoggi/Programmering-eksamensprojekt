@@ -1,7 +1,7 @@
 #include "player.h"
 
 Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
-                            dashSpeed(5000), dashCooldown(5.0f), dashTimer(0.0f), dashDuration(0.2f) {}
+                            dashSpeed(1500), dashCooldown(5.0f), dashTimer(0.0f), dashDuration(0.2f), dashSpeedChange(100) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -37,9 +37,15 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             // Increase dashTimer
             this->dashTimer += deltaTime;
 
+            // easein and easeout mechanic
+            if(this->dashSpeed >= 2500) this->dashSpeedChange *= -1;
+            this->dashSpeed += this->dashSpeedChange;
+            
+            // Duration control of dash
             if(this->dashDuration <= dashTimer) {
                 this->isDashing = false;
                 this->dashCooldown = 5.0f;
+                this->dashSpeedChange *= -1;
             }
 
         } else { // if not dashing, then regular movement
