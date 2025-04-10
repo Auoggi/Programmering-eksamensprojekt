@@ -1,6 +1,7 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), dashSpeed(5000), dashCooldown(5.0f) {}
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
+                            dashSpeed(5000), dashCooldown(5.0f), dashTimer(0.0f), dashDuration(0.2f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -8,7 +9,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     // If statements that detects user input
     if(glfwGetKey(window, GLFW_KEY_W)) {
         direction += glm::vec2(0, -1);
-    }
+    }   
     if(glfwGetKey(window, GLFW_KEY_S)) {
         direction += glm::vec2(0, 1);
     }
@@ -21,17 +22,33 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
 
     // Dashing feature and player movement
     if(glm::length(direction) != 0) {
-        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash) {
-            this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
+
+        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing) {
+            // Start the dash
+            this->isDashing = true;
+            this->dashTimer = 0.0f;
             this->dash = false;
-            this->dashCooldown = 5.0f;
-        } else { 
+        }
+        
+        if(isDashing){
+            // apply Dash movement
+            this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
+
+            // Increase dashTimer
+            this->dashTimer += deltaTime;
+
+            if(this->dashDuration <= dashTimer) {
+                this->isDashing = false;
+                this->dashCooldown = 5.0f;
+            }
+
+        } else { // if not dashing, then regular movement
             this->pos += glm::normalize(direction) * this->speed * (float) deltaTime;
         }
     }
 
     // Dash cooldown management
-    if(!this->dash) {
+    if(!this->dash && !this->isDashing) {
         this->dashCooldown -= deltaTime;
 
         if(0.0f >= this->dashCooldown) {

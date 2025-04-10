@@ -9,8 +9,8 @@
 
 class Player: public Entity {
 public:
-    float dashSpeed, dashCooldown;
-    bool dash;
+    float dashSpeed, dashCooldown, dashTimer, dashDuration;
+    bool dash, isDashing;
 
     Player();
 
