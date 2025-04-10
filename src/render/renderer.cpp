@@ -33,10 +33,10 @@ const char *textureFragmentCode =
 Renderer* Renderer::setupRenderer(unsigned int windowWidth, unsigned int windowHeight) {
     Shader shader = ResourceManager::setShader(textureVertexCode, textureFragmentCode, "sprite");
     shader.use();
-    glUniform1i(glGetUniformLocation(shader.ID, "image"), 0);
+    shader.setInteger("image", 0);
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight), 0.0f, -1.0f, 1.0f);
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, false, glm::value_ptr(projection));
+    shader.setMatrix4("projection", projection);
 
     return new Renderer(shader);
 }
@@ -57,8 +57,8 @@ void Renderer::drawTexture(Texture &texture, glm::mat4 view, glm::vec2 pos, glm:
 
     model = glm::scale(model, glm::vec3(size, 1.0f)); // last scale
 
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, false, glm::value_ptr(model));
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, false, glm::value_ptr(view));
+    shader.setMatrix4("model", model);
+    shader.setMatrix4("view", view);
 
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
