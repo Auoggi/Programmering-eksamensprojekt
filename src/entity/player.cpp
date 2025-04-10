@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false), dashSpeed(1500),
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
                             minDashSpeed(1500), maxDashSpeed(2000),dashCooldown(5.0f), dashTimer(0.0f), dashDuration(0.2f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
@@ -31,16 +31,16 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
         }
         
         if(isDashing){
+            // easein and easeout mechanic made using sinus
+            float progress = glm::clamp(this->dashTimer / this->dashDuration, 0.0f, 1.0f);
+            float easedProgress = (sin((progress - 0.5f) * glm::pi<float>()) + 1.0f) / 2.0f;
+            this->dashSpeed = glm::mix(this->minDashSpeed, this->maxDashSpeed, easedProgress);
+
             // apply Dash movement
             this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
 
             // Increase dashTimer
             this->dashTimer += deltaTime;
-
-            // easein and easeout mechanic made using sinus
-            float progress = glm::clamp(this->dashTimer / this->dashDuration, 0.0f, 1.0f);
-            float easedProgress = (sin((progress - 0.5f) * glm::pi<float>()) + 1.0f) / 2.0f;
-            this->dashSpeed = glm::mix(this->minDashSpeed, this->maxDashSpeed, easedProgress);
             
             // Duration control of dash
             if(this->dashDuration <= dashTimer) {
