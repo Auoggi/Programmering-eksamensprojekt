@@ -1,6 +1,7 @@
-#include <ctime>
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <set>
 #include <boost/array.hpp>
 #include <boost/bind/bind.hpp>
 #include <boost/shared_ptr.hpp>
@@ -8,17 +9,11 @@
 
 using boost::asio::ip::udp;
 
-std::string make_daytime_string()
-{
-  using namespace std; // For time_t, time and ctime;
-  time_t now = time(0);
-  return ctime(&now);
-}
-
 class udp_server {
 public:
     udp_server(boost::asio::io_context& io_context)
-        : socket_(io_context, udp::endpoint(udp::v4(), 8080))
+        : socket_(io_context, udp::endpoint(udp::v4(), 8080)),
+          timer_(io_context, boost::asio::chrono::seconds(1))
     {
         start_receive();
     }
@@ -32,15 +27,32 @@ private:
                 boost::asio::placeholders::bytes_transferred));
     }
 
-    void handle_receive(const boost::system::error_code& error, std::size_t /*bytes_transferred*/) {
+    void handle_receive(const boost::system::error_code& error, std::size_t bytes_transferred) {
         if (!error) {
-            boost::shared_ptr<std::string> message(
-                new std::string(make_daytime_string()));
+            std::string message;
 
-            socket_.async_send_to(boost::asio::buffer(*message), remote_endpoint_,
-                boost::bind(&udp_server::handle_send, this, message,
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
+            if (recv_buffer_[0] == 0) {
+                clients.insert(remote_endpoint_);
+                message = std::string("hello\n");
+            }
+            else if (recv_buffer_[0] == 4) {
+                clients.erase(remote_endpoint_);
+                message = std::string("goodbye\n");
+            }
+            else if (clients.count(remote_endpoint_)) {
+                
+                for (int i = 0; i < bytes_transferred; ++i) {
+                    std::cout << recv_buffer_.data()[i];
+                    message.push_back(recv_buffer_.data()[i]);
+                }
+                std::cout << std::endl;
+
+                /*std::ostringstream oss;
+                oss << recv_buffer_.data() << std::endl;
+                message = oss.str();*/
+            }
+
+            send_message(message, remote_endpoint_);
             
             start_receive();
         }
@@ -52,12 +64,22 @@ private:
     {
     }
 
+    void send_message(std::string text, udp::endpoint endpoint) {
+        boost::shared_ptr<std::string> message(new std::string(text));
+        
+        socket_.async_send_to(boost::asio::buffer(*message), remote_endpoint_,
+                    boost::bind(&udp_server::handle_send, this, message,
+                        boost::asio::placeholders::error,
+                        boost::asio::placeholders::bytes_transferred));
+    }
 
+    boost::asio::steady_timer timer_;
     udp::socket socket_;
     udp::endpoint remote_endpoint_;
     boost::array<char, 1> recv_buffer_;
+    std::set<udp::endpoint> clients;
 };
-
+// TODO: gør så at den kan modtage beskeder fra spillerer. Sende packet på en timer til alle clients.
 
 int main()
 {
