@@ -45,3 +45,19 @@ void Shader::checkCompileErrors(unsigned int object, const char *type) {
         }
     }
 }
+
+void Shader::setFloat(const char *name, float value) {
+    glUniform1f(glGetUniformLocation(this->ID, name), value);
+}
+
+void Shader::setInteger(const char *name, int value) {
+    glUniform1i(glGetUniformLocation(this->ID, name), value);
+}
+
+void Shader::setVector2f(const char *name, float x, float y) {
+    glUniform2f(glGetUniformLocation(this->ID, name), x, y);
+}
+
+void Shader::setMatrix4(const char *name, glm::mat4 &matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(this->ID, name), 1, false, glm::value_ptr(matrix));
+}

@@ -35,10 +35,10 @@ std::shared_ptr<std::vector<Entity*>> Grid::getEntityList(const glm::ivec2& pos)
 void Grid::draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY) {
     this->shader.use();
 
-    glUniformMatrix4fv(glGetUniformLocation(this->shader.ID, "view"), 1, false, glm::value_ptr(view));
-    glUniform1f(glGetUniformLocation(this->shader.ID, "tileSize"), 64.f);
-    glUniform2f(glGetUniformLocation(this->shader.ID, "screenSize"), screenWidth, screenHeight);
-    glUniform2f(glGetUniformLocation(this->shader.ID, "centerTile"), centerTileX, centerTileY);
+    this->shader.setMatrix4("view", view);
+    this->shader.setFloat("tileSize", this->tileSize);
+    this->shader.setVector2f("screenSize", screenWidth, screenHeight);
+    this->shader.setVector2f("centerTile", centerTileX, centerTileY);
     
     glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
