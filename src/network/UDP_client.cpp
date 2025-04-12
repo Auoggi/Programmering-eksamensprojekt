@@ -4,49 +4,41 @@
 
 using boost::asio::ip::udp;
 
-class udp_client {
+class udpClient {
 public:
-    udp_client(boost::asio::io_context& io_context)
-        : socket_(io_context),
-          resolver_(io_context)
+    udpClient(boost::asio::io_context& ioContext)
+        : socket_(ioContext),
+          resolver(ioContext)
     {
         socket_.open(udp::v4());
     }
 
     void connect(std::string ipv4, std::string port) {
-        receiver_endpoint = *resolver_.resolve(udp::v4(), ipv4, port).begin();
+        receiverEndpoint = *resolver.resolve(udp::v4(), ipv4, port).begin();
 
-        send_buf.at(0) = 0;
-        socket_.send_to(boost::asio::buffer(send_buf), receiver_endpoint);
+        socket_.send_to(boost::asio::buffer("\0"), receiverEndpoint);
     }
 
     void send_message(std::string text) {
-        std::copy(text.begin(), text.end(), send_buf.begin());
-
-        std::cout << "text sendt: ";
-        std::cout.write(send_buf.data(), text.size());
-        std::cout << std::endl;
-
-        socket_.send_to(boost::asio::buffer(text), receiver_endpoint);
+        socket_.send_to(boost::asio::buffer(text), receiverEndpoint);
     }
 
     std::string listen() {
-        udp::endpoint sender_endpoint;
-        size_t len = socket_.receive_from(boost::asio::buffer(recv_buf), sender_endpoint);
+        size_t len = socket_.receive_from(boost::asio::buffer(recvBuf), senderEndpoint);
 
         std::string message;
         for (int i = 0; i < len; ++i) {
-            message.push_back(recv_buf[i]);
+            message.push_back(recvBuf[i]);
         }
         return message;
     }
 
 private:
     udp::socket socket_;
-    udp::resolver resolver_;
-    udp::endpoint receiver_endpoint;
-    boost::array<char, 128> send_buf;
-    boost::array<char, 128> recv_buf;
+    udp::resolver resolver;
+    udp::endpoint receiverEndpoint;
+    udp::endpoint senderEndpoint;
+    boost::array<char, 128> recvBuf;
 };
 
 
@@ -56,15 +48,15 @@ int main(int argc, char* argv[]) {
             std::cerr << "Usage: client <host>" << std::endl;
             return 1;
         }
-        boost::asio::io_context io_context;
+        boost::asio::io_context ioContext;
 
-        udp_client udp_client(io_context);
-        udp_client.connect(argv[1], "8080");
-        udp_client.send_message("HI");
+        udpClient udpClient(ioContext);
+        udpClient.connect(argv[1], "8080");
+        udpClient.send_message("HI");
         
         for (;;)
         {
-            std::cout << "text received: " << udp_client.listen() << std::endl;
+            std::cout << "text received: " << udpClient.listen() << std::endl;
         }
         
     }
