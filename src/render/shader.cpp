@@ -4,16 +4,16 @@ void Shader::use() {
     glUseProgram(this->ID);
 }
 
-void Shader::compile(const char *vertexCode, const char *fragmentCode) {
+void Shader::compile(const char *vertexCode, int vertexSize, const char *fragmentCode, int fragmentSize) {
     unsigned int sVertex, sFragment;
     // vertex Shader
     sVertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(sVertex, 1, &vertexCode, NULL);
+    glShaderSource(sVertex, 1, &vertexCode, (GLint*) &vertexSize);
     glCompileShader(sVertex);
     checkCompileErrors(sVertex, "VERTEX");
     // fragment Shader
     sFragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(sFragment, 1, &fragmentCode, NULL);
+    glShaderSource(sFragment, 1, &fragmentCode, (GLint*) &fragmentSize);
     glCompileShader(sFragment);
     checkCompileErrors(sFragment, "FRAGMENT");
     // shader program
@@ -44,4 +44,20 @@ void Shader::checkCompileErrors(unsigned int object, const char *type) {
             fprintf(stdout, "Shader link-time error: \nType: %s\n%s\n", type, infoLog);
         }
     }
+}
+
+void Shader::setFloat(const char *name, float value) {
+    glUniform1f(glGetUniformLocation(this->ID, name), value);
+}
+
+void Shader::setInteger(const char *name, int value) {
+    glUniform1i(glGetUniformLocation(this->ID, name), value);
+}
+
+void Shader::setVector2f(const char *name, float x, float y) {
+    glUniform2f(glGetUniformLocation(this->ID, name), x, y);
+}
+
+void Shader::setMatrix4(const char *name, glm::mat4 &matrix) {
+    glUniformMatrix4fv(glGetUniformLocation(this->ID, name), 1, false, glm::value_ptr(matrix));
 }

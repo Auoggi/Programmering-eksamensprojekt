@@ -31,7 +31,7 @@ Shader ResourceManager::loadShader(const char *vertexFile, const char *fragmentF
     const char *fShaderCode = fragmentCode.c_str();
     // 2. now create shader object from source code
     Shader shader;
-    shader.compile(vShaderCode, fShaderCode);
+    shader.compile(vShaderCode, strlen(vShaderCode), fShaderCode, strlen(fShaderCode));
 
     shaders[name] = shader;
     return shaders[name];
@@ -39,7 +39,15 @@ Shader ResourceManager::loadShader(const char *vertexFile, const char *fragmentF
 
 Shader ResourceManager::setShader(const char *vertexCode, const char *fragmentCode, std::string name) {
     Shader shader;
-    shader.compile(vertexCode, fragmentCode);
+    shader.compile(vertexCode, strlen(vertexCode), fragmentCode, strlen(fragmentCode));
+
+    shaders[name] = shader;
+    return shaders[name];
+}
+
+Shader ResourceManager::setShader(const char *vertexCode, int vertexSize, const char *fragmentCode, int fragmentSize, std::string name) {
+    Shader shader;
+    shader.compile(vertexCode, vertexSize, fragmentCode, fragmentSize);
 
     shaders[name] = shader;
     return shaders[name];

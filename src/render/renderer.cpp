@@ -14,10 +14,11 @@ const char *textureVertexCode =
 "layout (location = 0) in vec4 vertex;\n"
 "out vec2 TexCoords;\n"
 "uniform mat4 model;\n"
+"uniform mat4 view;\n"
 "uniform mat4 projection;\n"
 "void main() {\n"
 "TexCoords = vertex.zw;\n"
-"gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);\n"
+"gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);\n"
 "}\n";
 
 const char *textureFragmentCode = 
@@ -32,19 +33,19 @@ const char *textureFragmentCode =
 Renderer* Renderer::setupRenderer(unsigned int windowWidth, unsigned int windowHeight) {
     Shader shader = ResourceManager::setShader(textureVertexCode, textureFragmentCode, "sprite");
     shader.use();
-    glUniform1i(glGetUniformLocation(shader.ID, "image"), 0);
+    shader.setInteger("image", 0);
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight), 0.0f, -1.0f, 1.0f);
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, false, glm::value_ptr(projection));
+    shader.setMatrix4("projection", projection);
 
     return new Renderer(shader);
 }
 
-void Renderer::drawTexture(Texture &texture, glm::vec2 pos) {
-    drawTexture(texture, pos, glm::vec2(texture.width, texture.height), 0);
+void Renderer::drawTexture(Texture &texture, glm::mat4 view, glm::vec2 pos) {
+    drawTexture(texture, view, pos, glm::vec2(texture.width, texture.height), 0);
 }
 
-void Renderer::drawTexture(Texture &texture, glm::vec2 pos, glm::vec2 size, float rotation) {
+void Renderer::drawTexture(Texture &texture, glm::mat4 view, glm::vec2 pos, glm::vec2 size, float rotation) {
     // prepare transformations
     this->shader.use();
     glm::mat4 model = glm::mat4(1.0f);
@@ -56,7 +57,8 @@ void Renderer::drawTexture(Texture &texture, glm::vec2 pos, glm::vec2 size, floa
 
     model = glm::scale(model, glm::vec3(size, 1.0f)); // last scale
 
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, false, glm::value_ptr(model));
+    shader.setMatrix4("model", model);
+    shader.setMatrix4("view", view);
 
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
