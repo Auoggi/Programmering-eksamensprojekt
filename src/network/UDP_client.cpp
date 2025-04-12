@@ -8,13 +8,13 @@ class udpClient {
 public:
     udpClient(boost::asio::io_context& ioContext)
         : socket_(ioContext),
-          resolver(ioContext)
+          resolver(ioContext) // DNS lookup like gets ip address from website link
     {
         socket_.open(udp::v4());
     }
 
     void connect(std::string ipv4, std::string port) {
-        receiverEndpoint = *resolver.resolve(udp::v4(), ipv4, port).begin();
+        receiverEndpoint = *resolver.resolve(udp::v4(), ipv4, port).begin(); // gets ip address and port for server
 
         socket_.send_to(boost::asio::buffer("\0"), receiverEndpoint);
     }
@@ -24,13 +24,10 @@ public:
     }
 
     std::string listen() {
-        size_t len = socket_.receive_from(boost::asio::buffer(recvBuf), senderEndpoint);
+        size_t len = socket_.receive_from(boost::asio::buffer(recvBuf), senderEndpoint); // len is number of bytes transferred
 
-        std::string message;
-        for (int i = 0; i < len; ++i) {
-            message.push_back(recvBuf[i]);
-        }
-        return message;
+        recvBuf.at(len) = '\0';
+        return recvBuf.data();
     }
 
 private:
