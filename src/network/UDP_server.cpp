@@ -15,6 +15,7 @@ public:
         : socket_(io_context, udp::endpoint(udp::v4(), 8080)),
           timer_(io_context, boost::asio::chrono::seconds(1))
     {
+        timer_.async_wait(boost::bind(&udp_server::messageInInterval, this));
         start_receive();
     }
 
@@ -39,11 +40,7 @@ private:
                 clients.erase(remote_endpoint_);
                 message = std::string("goodbye\n");
             }
-            else if (clients.count(remote_endpoint_)) {
-                std::cout << "text received: ";
-                std::cout.write(recv_buffer_.data(), bytes_transferred) << std::endl;
-                std::cout << "bytes received: " << bytes_transferred << std::endl;
-                
+            else if (clients.count(remote_endpoint_)) {                
                 recv_buffer_.at(bytes_transferred) = '\0';
                 message = recv_buffer_.data();
             }
@@ -69,13 +66,21 @@ private:
                         boost::asio::placeholders::bytes_transferred));
     }
 
+    void messageInInterval() {
+        for (udp::endpoint client : clients) {
+            send_message("Message in interval of 1 second", client);
+        }
+
+        timer_.expires_at(timer_.expiry() + boost::asio::chrono::seconds(1)); // Will send every second
+        timer_.async_wait(boost::bind(&udp_server::messageInInterval, this));
+    }
+
     boost::asio::steady_timer timer_;
     udp::socket socket_;
     udp::endpoint remote_endpoint_;
     boost::array<char, 128> recv_buffer_;
     std::set<udp::endpoint> clients;
 };
-// TODO: gør så at den kan modtage beskeder fra spillerer. Sende packet på en timer til alle clients.
 
 int main()
 {
