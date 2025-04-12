@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "render/resource_manager.h"
 #include "render/renderer.h"
 #include "entity/player.h"
 #include "grid/grid.h"
