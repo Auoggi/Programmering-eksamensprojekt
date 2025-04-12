@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(100), dash(true), isDashing(false),
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
@@ -23,11 +23,14 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     // Dashing feature and player movement
     if(glm::length(direction) != 0) {
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing) {
+        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing && this->stamina > 10) {
             // Start the dash
             this->isDashing = true;
             this->dashTimer = 0.0f;
             this->dash = false;
+
+            // adjust stamina
+            this->stamina -= 10;
         }
         
         if(isDashing) {

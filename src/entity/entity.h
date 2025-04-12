@@ -12,12 +12,12 @@
 class Entity {
 public:
     glm::ivec2 prevTilePos, currTilePos;
-    int width, height;
+    int width, height, health;
     Texture texture;
     glm::vec2 pos;
     float speed;
 
-    Entity(const char *texture, const char *textureName, int width, int height);
+    Entity(const char *texture, const char *textureName, int width, int height, int health);
 
     glm::ivec2 getTileCoords(Grid *grid);
 
