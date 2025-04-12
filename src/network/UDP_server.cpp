@@ -9,13 +9,13 @@
 
 using boost::asio::ip::udp;
 
-class udp_server {
+class UdpServer {
 public:
-    udp_server(boost::asio::io_context& ioContext)
+    UdpServer(boost::asio::io_context& ioContext)
         : socket(ioContext, udp::endpoint(udp::v4(), 8080)),
           timer(ioContext, boost::asio::chrono::seconds(1))
     {
-        timer.async_wait(boost::bind(&udp_server::messageInInterval, this));
+        timer.async_wait(boost::bind(&UdpServer::messageInInterval, this));
         start_receive();
     }
 
@@ -23,7 +23,7 @@ private:
     void start_receive() {
         socket.async_receive_from(
             boost::asio::buffer(recvBuffer), currentClient,
-            boost::bind(&udp_server::handle_receive, this,
+            boost::bind(&UdpServer::handle_receive, this,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     }
@@ -60,7 +60,7 @@ private:
         boost::shared_ptr<std::string> message(new std::string(text));
         
         socket.async_send_to(boost::asio::buffer(*message), endpoint,
-                    boost::bind(&udp_server::handle_send, this, message,
+                    boost::bind(&UdpServer::handle_send, this, message,
                         boost::asio::placeholders::error,
                         boost::asio::placeholders::bytes_transferred));
     }
@@ -71,7 +71,7 @@ private:
         }
 
         timer.expires_at(timer.expiry() + boost::asio::chrono::seconds(1)); // Will send every second
-        timer.async_wait(boost::bind(&udp_server::messageInInterval, this));
+        timer.async_wait(boost::bind(&UdpServer::messageInInterval, this));
     }
 
     boost::asio::steady_timer timer;
@@ -85,7 +85,7 @@ int main()
 {
   try {
     boost::asio::io_context io_context;
-    udp_server server(io_context);
+    UdpServer server(io_context);
     io_context.run();
   }
   catch (std::exception& e) {
