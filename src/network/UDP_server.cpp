@@ -40,16 +40,12 @@ private:
                 message = std::string("goodbye\n");
             }
             else if (clients.count(remote_endpoint_)) {
+                std::cout << "text received: ";
+                std::cout.write(recv_buffer_.data(), bytes_transferred) << std::endl;
+                std::cout << "bytes received: " << bytes_transferred << std::endl;
                 
-                for (int i = 0; i < bytes_transferred; ++i) {
-                    std::cout << recv_buffer_.data()[i];
-                    message.push_back(recv_buffer_.data()[i]);
-                }
-                std::cout << std::endl;
-
-                /*std::ostringstream oss;
-                oss << recv_buffer_.data() << std::endl;
-                message = oss.str();*/
+                recv_buffer_.at(bytes_transferred) = '\0';
+                message = recv_buffer_.data();
             }
 
             send_message(message, remote_endpoint_);
@@ -76,7 +72,7 @@ private:
     boost::asio::steady_timer timer_;
     udp::socket socket_;
     udp::endpoint remote_endpoint_;
-    boost::array<char, 1> recv_buffer_;
+    boost::array<char, 128> recv_buffer_;
     std::set<udp::endpoint> clients;
 };
 // TODO: gør så at den kan modtage beskeder fra spillerer. Sende packet på en timer til alle clients.

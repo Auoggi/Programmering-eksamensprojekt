@@ -21,12 +21,13 @@ public:
     }
 
     void send_message(std::string text) {
-        for (int i = 0; i < text.size() || i < send_buf.max_size(); ++i) {
-            send_buf.at(i) = text[i];
-        }
-        //std::cout.write(send_buf.data(), text.size());
+        std::copy(text.begin(), text.end(), send_buf.begin());
 
-        socket_.send_to(boost::asio::buffer(send_buf), receiver_endpoint);
+        std::cout << "text sendt: ";
+        std::cout.write(send_buf.data(), text.size());
+        std::cout << std::endl;
+
+        socket_.send_to(boost::asio::buffer(text), receiver_endpoint);
     }
 
     std::string listen() {
@@ -59,16 +60,16 @@ int main(int argc, char* argv[]) {
 
         udp_client udp_client(io_context);
         udp_client.connect(argv[1], "8080");
-        udp_client.send_message("hi");
+        udp_client.send_message("HI");
         
         for (;;)
         {
-            std::cout << udp_client.listen() << std::endl;
+            std::cout << "text received: " << udp_client.listen() << std::endl;
         }
         
     }
     catch (std::exception& e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
     }
 
     return 0;
