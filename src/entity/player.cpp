@@ -1,6 +1,7 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), dashSpeed(5000), dashCooldown(5.0f) {}
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
+                            minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -8,7 +9,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     // If statements that detects user input
     if(glfwGetKey(window, GLFW_KEY_W)) {
         direction += glm::vec2(0, -1);
-    }
+    }   
     if(glfwGetKey(window, GLFW_KEY_S)) {
         direction += glm::vec2(0, 1);
     }
@@ -21,17 +22,39 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
 
     // Dashing feature and player movement
     if(glm::length(direction) != 0) {
-        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash) {
-            this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
+
+        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing) {
+            // Start the dash
+            this->isDashing = true;
+            this->dashTimer = 0.0f;
             this->dash = false;
-            this->dashCooldown = 5.0f;
-        } else { 
+        }
+        
+        if(isDashing) {
+            // easein and easeout mechanic made using sinus
+            float progress = glm::clamp(this->dashTimer / this->dashDuration, 0.0f, 1.0f);
+            float easedProgress = (sin((progress - 0.5f) * glm::pi<float>()) + 1.0f) / 2.0f;
+            this->dashSpeed = glm::mix(this->minDashSpeed, this->maxDashSpeed, easedProgress);
+
+            // apply Dash movement
+            this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
+
+            // Increase dashTimer
+            this->dashTimer += deltaTime;
+            
+            // Duration control of dash
+            if(this->dashDuration <= dashTimer) {
+                this->isDashing = false;
+                this->dashCooldown = 2.0f;
+            }
+
+        } else { // if not dashing, then regular movement
             this->pos += glm::normalize(direction) * this->speed * (float) deltaTime;
         }
     }
 
     // Dash cooldown management
-    if(!this->dash) {
+    if(!this->dash && !this->isDashing) {
         this->dashCooldown -= deltaTime;
 
         if(0.0f >= this->dashCooldown) {
