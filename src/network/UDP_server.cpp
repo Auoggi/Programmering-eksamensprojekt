@@ -11,41 +11,40 @@ using boost::asio::ip::udp;
 
 class udp_server {
 public:
-    udp_server(boost::asio::io_context& io_context)
-        : socket_(io_context, udp::endpoint(udp::v4(), 8080)),
-          timer_(io_context, boost::asio::chrono::seconds(1))
+    udp_server(boost::asio::io_context& ioContext)
+        : socket(ioContext, udp::endpoint(udp::v4(), 8080)),
+          timer(ioContext, boost::asio::chrono::seconds(1))
     {
-        timer_.async_wait(boost::bind(&udp_server::messageInInterval, this));
+        timer.async_wait(boost::bind(&udp_server::messageInInterval, this));
         start_receive();
     }
 
 private:
     void start_receive() {
-        socket_.async_receive_from(
-            boost::asio::buffer(recv_buffer_), remote_endpoint_,
+        socket.async_receive_from(
+            boost::asio::buffer(recvBuffer), currentClient,
             boost::bind(&udp_server::handle_receive, this,
                 boost::asio::placeholders::error,
                 boost::asio::placeholders::bytes_transferred));
     }
 
-    void handle_receive(const boost::system::error_code& error, std::size_t bytes_transferred) {
+    void handle_receive(const boost::system::error_code& error, std::size_t bytesTransferred) {
         if (!error) {
             std::string message;
 
-            if (recv_buffer_[0] == 0) {
-                clients.insert(remote_endpoint_);
+            if (recvBuffer[0] == 0) {
+                clients.insert(currentClient);
                 message = std::string("hello\n");
             }
-            else if (recv_buffer_[0] == 4) {
-                clients.erase(remote_endpoint_);
+            else if (recvBuffer[0] == 4) {
+                clients.erase(currentClient);
                 message = std::string("goodbye\n");
             }
-            else if (clients.count(remote_endpoint_)) {                
-                recv_buffer_.at(bytes_transferred) = '\0';
-                message = recv_buffer_.data();
+            else if (clients.count(currentClient)) {                
+                recvBuffer.at(bytesTransferred) = '\0';
+                message = recvBuffer.data();
             }
-
-            send_message(message, remote_endpoint_);
+            send_message(message, currentClient);
             
             start_receive();
         }
@@ -60,7 +59,7 @@ private:
     void send_message(std::string text, udp::endpoint endpoint) {
         boost::shared_ptr<std::string> message(new std::string(text));
         
-        socket_.async_send_to(boost::asio::buffer(*message), remote_endpoint_,
+        socket.async_send_to(boost::asio::buffer(*message), endpoint,
                     boost::bind(&udp_server::handle_send, this, message,
                         boost::asio::placeholders::error,
                         boost::asio::placeholders::bytes_transferred));
@@ -71,14 +70,14 @@ private:
             send_message("Message in interval of 1 second", client);
         }
 
-        timer_.expires_at(timer_.expiry() + boost::asio::chrono::seconds(1)); // Will send every second
-        timer_.async_wait(boost::bind(&udp_server::messageInInterval, this));
+        timer.expires_at(timer.expiry() + boost::asio::chrono::seconds(1)); // Will send every second
+        timer.async_wait(boost::bind(&udp_server::messageInInterval, this));
     }
 
-    boost::asio::steady_timer timer_;
-    udp::socket socket_;
-    udp::endpoint remote_endpoint_;
-    boost::array<char, 128> recv_buffer_;
+    boost::asio::steady_timer timer;
+    udp::socket socket;
+    udp::endpoint currentClient;
+    boost::array<char, 128> recvBuffer;
     std::set<udp::endpoint> clients;
 };
 
