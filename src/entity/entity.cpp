@@ -1,6 +1,6 @@
 #include "entity.h"
 
-Entity::Entity(const char *texture, const char *textureName, int width, int height) : pos(glm::vec2(0, 0)), currTilePos(glm::ivec2(0, 0)), speed(300), width(width), height(height){
+Entity::Entity(const char *texture, const char *textureName, int width, int height, int health) : pos(glm::vec2(0, 0)), currTilePos(glm::ivec2(0, 0)), speed(300), width(width), height(height){
     this->texture = ResourceManager::loadTexture(texture, textureName);
 }
 

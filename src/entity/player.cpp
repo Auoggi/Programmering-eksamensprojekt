@@ -1,7 +1,8 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25), dash(true), isDashing(false),
-                            minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f) {}
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(25.0f), dash(true), isDashing(false),
+                            minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
+                            staminaRegenRate(1.0f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -23,14 +24,17 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     // Dashing feature and player movement
     if(glm::length(direction) != 0) {
 
-        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing) {
+        if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing && this->stamina > 10) {
             // Start the dash
             this->isDashing = true;
             this->dashTimer = 0.0f;
             this->dash = false;
+
+            // adjust stamina
+            this->stamina -= 10;
         }
         
-        if(isDashing) {
+        if(this->isDashing) {
             // easein and easeout mechanic made using sinus
             float progress = glm::clamp(this->dashTimer / this->dashDuration, 0.0f, 1.0f);
             float easedProgress = (sin((progress - 0.5f) * glm::pi<float>()) + 1.0f) / 2.0f;
@@ -43,7 +47,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             this->dashTimer += deltaTime;
             
             // Duration control of dash
-            if(this->dashDuration <= dashTimer) {
+            if(this->dashDuration <= this->dashTimer) {
                 this->isDashing = false;
                 this->dashCooldown = 2.0f;
             }
@@ -61,6 +65,12 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             this->dash = true; 
         }
     }
+
+    // Stamina regeneration using deltaTime
+    if(this->stamina < 25) {
+        this->stamina += this->staminaRegenRate * deltaTime;
+        if(this->stamina > 25) this->stamina = 25.0f;
+    } 
 }
 
 glm::mat4 Player::getView(int screenWidth, int screenHeight) {

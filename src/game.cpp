@@ -48,7 +48,7 @@ int main() {
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
     Player *player = new Player();
 
-    Entity *obstacle = new Entity("assets/textures/ball64.png", "obstacle", 64, 64);
+    Entity *obstacle = new Entity("assets/textures/ball64.png", "obstacle", 64, 64, 0);
     obstacle->pos = glm::vec2(96, 96);
 
     double currentTime = glfwGetTime();
