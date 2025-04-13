@@ -40,7 +40,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             this->dashSpeed = glm::mix(this->minDashSpeed, this->maxDashSpeed, easedProgress);
 
             // apply Dash movement
-            this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
+            this->velocity = glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
 
             // Increase dashTimer
             this->dashTimer += deltaTime;
@@ -52,9 +52,15 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             }
 
         } else { // if not dashing, then regular movement
-            this->pos += glm::normalize(direction) * this->speed * (float) deltaTime;
+            this->velocity = glm::normalize(direction) * this->speed * (float) deltaTime;
         }
+
+    } else {
+        this->velocity = direction;
     }
+
+    // apply velocity to postion
+    this->pos += this->velocity;
 
     // Dash cooldown management
     if(!this->dash && !this->isDashing) {

@@ -13,8 +13,8 @@ class Entity {
 public:
     glm::ivec2 prevTilePos, currTilePos;
     int width, height, health;
+    glm::vec2 pos, velocity;
     Texture texture;
-    glm::vec2 pos;
     float speed;
 
     Entity(const char *texture, const char *textureName, int width, int height, int health);
