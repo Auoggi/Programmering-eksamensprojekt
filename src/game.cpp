@@ -81,7 +81,8 @@ int main() {
 
     // 8x8 grid of 64x64 textures for use in rendering map
     Texture tilemap = ResourceManager::loadTexture("assets/textures/tilemap.png", "tilemap");
-    int tilemapColumnCount, tilemapRowCount = 8;
+    int tilemapColumnCount = 8;
+    int tilemapRowCount = 8;
 
     Shader shader = ResourceManager::setShader(GRID_VERTEX_GLSL, MAP_FRAGMENT_GLSL, "map");
 
