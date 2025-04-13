@@ -15,13 +15,10 @@ void main() {
     vec4 tPos = view * vec4(-gl_FragCoord.x, gl_FragCoord.y - screenSize.y, 0, 1);
 
     // index of texture to display
-    int index = 8; // Hardcoded test value, corresponds to first column of second row
+    int index = 3; // Hardcoded test value
 
-    float x = mod(index, columnCount) * tileSize;
-    float y = floor(index * (1.0 / columnCount)) * tileSize;
+    float x = (mod(index, columnCount) * tileSize) + mod(-tPos.x, tileSize);
+    float y = (floor(index * (1.0 / columnCount)) * tileSize) + mod(-tPos.y, tileSize);
 
-    x += mod(tPos.x, tileSize);
-    y += mod(tPos.y, tileSize);
-
-    fragColor = texture(image, vec2(x * (1.0 / (columnCount * tileSize)), y * (1.0 / (rowCount * tileSize))));
+    fragColor = texture(image, vec2(x * (1.0 / (rowCount * tileSize)), y * (1.0 / (rowCount * tileSize))));
 }
