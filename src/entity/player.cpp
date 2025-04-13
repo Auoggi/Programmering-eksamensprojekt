@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(100.0f), dash(true), isDashing(false),
+Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(25.0f), dash(true), isDashing(false),
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
                             staminaRegenRate(1.0f) {}
 
@@ -67,9 +67,9 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     }
 
     // Stamina regeneration using deltaTime
-    if(this->stamina < 100) {
+    if(this->stamina < 25) {
         this->stamina += this->staminaRegenRate * deltaTime;
-        if(this->stamina > 100) this->stamina = 100.0f;
+        if(this->stamina > 25) this->stamina = 25.0f;
     } 
 }
 
