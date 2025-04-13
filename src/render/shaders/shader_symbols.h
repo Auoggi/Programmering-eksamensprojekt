@@ -16,3 +16,11 @@ namespace shader_symbols {
 #define GRID_VERTEX_GLSL_SIZE shader_symbols::_binary_src_render_shaders_grid_vertex_glsl_end - shader_symbols::_binary_src_render_shaders_grid_vertex_glsl_start
 #define GRID_VERTEX_GLSL GRID_VERTEX_GLSL_START, GRID_VERTEX_GLSL_SIZE
 
+namespace shader_symbols {
+	extern "C" char _binary_src_render_shaders_map_fragment_glsl_start[];
+	extern "C" char _binary_src_render_shaders_map_fragment_glsl_end[];
+}
+#define MAP_FRAGMENT_GLSL_START shader_symbols::_binary_src_render_shaders_map_fragment_glsl_start
+#define MAP_FRAGMENT_GLSL_SIZE shader_symbols::_binary_src_render_shaders_map_fragment_glsl_end - shader_symbols::_binary_src_render_shaders_map_fragment_glsl_start
+#define MAP_FRAGMENT_GLSL MAP_FRAGMENT_GLSL_START, MAP_FRAGMENT_GLSL_SIZE
+
