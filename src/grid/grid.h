@@ -31,7 +31,7 @@ public:
     GLuint VAO; // OpenGL unsigned integer
 
     Grid(const int tileSize, float screenWidth, float screenHeight);
-    void draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY);
+    void draw(glm::mat4 view, int centerTileX, int centerTileY);
 };
 
 #endif
