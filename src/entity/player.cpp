@@ -34,7 +34,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             this->stamina -= 10;
         }
         
-        if(isDashing) {
+        if(this->isDashing) {
             // easein and easeout mechanic made using sinus
             float progress = glm::clamp(this->dashTimer / this->dashDuration, 0.0f, 1.0f);
             float easedProgress = (sin((progress - 0.5f) * glm::pi<float>()) + 1.0f) / 2.0f;
@@ -47,7 +47,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             this->dashTimer += deltaTime;
             
             // Duration control of dash
-            if(this->dashDuration <= dashTimer) {
+            if(this->dashDuration <= this->dashTimer) {
                 this->isDashing = false;
                 this->dashCooldown = 2.0f;
             }
