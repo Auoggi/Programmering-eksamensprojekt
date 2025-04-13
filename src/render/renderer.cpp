@@ -12,22 +12,22 @@ Renderer::~Renderer() {
 const char *textureVertexCode = 
 "#version 330 core\n"
 "layout (location = 0) in vec4 vertex;\n"
-"out vec2 TexCoords;\n"
+"out vec2 texCoords;\n"
 "uniform mat4 model;\n"
 "uniform mat4 view;\n"
 "uniform mat4 projection;\n"
 "void main() {\n"
-"TexCoords = vertex.zw;\n"
+"texCoords = vertex.zw;\n"
 "gl_Position = projection * view * model * vec4(vertex.xy, 0.0, 1.0);\n"
 "}\n";
 
 const char *textureFragmentCode = 
 "#version 330 core\n"
-"in vec2 TexCoords;\n"
+"in vec2 texCoords;\n"
 "out vec4 color;\n"
 "uniform sampler2D image;\n"
 "void main() {\n"
-"color = texture(image, TexCoords);\n"
+"color = texture(image, texCoords);\n"
 "}\n";
 
 Renderer* Renderer::setupRenderer(unsigned int windowWidth, unsigned int windowHeight) {
