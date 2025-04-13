@@ -73,7 +73,7 @@ int main() {
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        grid->draw(view, screenWidth, screenHeight, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
+        grid->draw(view, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
         player->draw(renderer, view);       
         obstacle->draw(renderer, view);
 
