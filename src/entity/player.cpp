@@ -10,7 +10,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
     // If statements that detects user input
     if(glfwGetKey(window, GLFW_KEY_W)) {
         direction += glm::vec2(0, -1);
-    }   
+    }
     if(glfwGetKey(window, GLFW_KEY_S)) {
         direction += glm::vec2(0, 1);
     }
@@ -23,7 +23,6 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
 
     // Dashing feature and player movement
     if(glm::length(direction) != 0) {
-
         if(glfwGetKey(window, GLFW_KEY_SPACE) && this->dash && !this->isDashing && this->stamina > 10) {
             // Start the dash
             this->isDashing = true;
