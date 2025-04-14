@@ -53,12 +53,10 @@ void Map::draw(glm::mat4 view) {
     this->shader.setMatrix4("view", view);
 
     // Bind tilemap to texture0
-    glActiveTexture(GL_TEXTURE0);
-    this->tilemap.bind();
+    this->tilemap.bind(GL_TEXTURE0);
 
     // Bind map to texture1
-    glActiveTexture(GL_TEXTURE1);
-    this->map_data.bind();
+    this->map_data.bind(GL_TEXTURE1);
 
     glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

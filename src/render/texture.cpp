@@ -20,6 +20,7 @@ void Texture::generate(unsigned int width, unsigned int height, unsigned char *d
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::bind() {
+void Texture::bind(int gl_texture) {
+    glActiveTexture(gl_texture);
     glBindTexture(GL_TEXTURE_2D, this->ID);
 }

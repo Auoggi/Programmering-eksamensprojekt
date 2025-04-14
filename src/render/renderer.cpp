@@ -60,8 +60,7 @@ void Renderer::drawTexture(Texture &texture, glm::mat4 view, glm::vec2 pos, glm:
     shader.setMatrix4("model", model);
     shader.setMatrix4("view", view);
 
-    glActiveTexture(GL_TEXTURE0);
-    texture.bind();
+    texture.bind(GL_TEXTURE0);
 
     glBindVertexArray(this->VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
