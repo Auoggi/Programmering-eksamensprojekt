@@ -62,7 +62,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             if (glm::length(deltaVelocity) != 0) {
                 glm::vec2 accelStep = glm::normalize(deltaVelocity) * this->acceleration;
 
-                // Clamp the acceleration step if we're going to overshoot
+                // Clamp the acceleration step to prevent overshoot
                 if (glm::length(accelStep) > glm::length(deltaVelocity)) {
                     accelStep = deltaVelocity;
                 }
