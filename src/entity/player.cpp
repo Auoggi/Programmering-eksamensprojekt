@@ -56,7 +56,18 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
         }
 
     } else {
-        this->velocity = direction;
+        // Deacceleration
+        if(glm::length(this->velocity) > 0) {
+            this->velocity -= glm::normalize(this->velocity) * 100.0f * (float)deltaTime;
+
+            // set velocity to zero if it over-decelerated
+            if (glm::length(this->velocity) < 1.0f) {
+                this->velocity = glm::vec2(0.0f);
+            }
+
+        } else {
+            this->velocity = glm::vec2(0, 0);
+        }
     }
 
     // apply velocity to postion
