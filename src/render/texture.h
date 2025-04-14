@@ -11,7 +11,7 @@ public:
     Texture();
 
     void generate(unsigned int width, unsigned int height, unsigned char *data);
-    void bind();
+    void bind(int gl_texture);
 };
 
 #endif
