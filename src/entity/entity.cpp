@@ -1,7 +1,7 @@
 #include "entity.h"
 
 Entity::Entity(const char *texture, const char *textureName, int width, int height, int health) : pos(glm::vec2(0, 0)), currTilePos(glm::ivec2(0, 0)),
-                 speed(300), width(width), height(height) {
+                 speed(300), width(width), height(height), velocity(glm::vec2(0, 0)) {
     this->texture = ResourceManager::loadTexture(texture, textureName);
 }
 
