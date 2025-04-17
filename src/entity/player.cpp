@@ -77,7 +77,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             glm::vec2 decelStep = glm::normalize(this->velocity) * this->deacceleration;
             
             // Makes sure not to deaccelerate to much
-            if (glm::length(decelStep) > glm::length(this->velocity)) {
+            if (this->deacceleration > glm::length(this->velocity)) {
                 this->velocity = glm::vec2(0.0f);
             } else {
                 this->velocity -= decelStep;
