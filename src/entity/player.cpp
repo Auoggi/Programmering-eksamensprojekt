@@ -2,7 +2,7 @@
 
 Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(25.0f), dash(true), isDashing(false),
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
-                            staminaRegenRate(1.0f) {}
+                            acceleration(125.0f), deacceleration(150.0f),staminaRegenRate(1.0f) {}
 
 void Player::processInput(GLFWwindow *window, double deltaTime) {
     glm::vec2 direction = glm::vec2(0, 0);
@@ -40,7 +40,7 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
             this->dashSpeed = glm::mix(this->minDashSpeed, this->maxDashSpeed, easedProgress);
 
             // apply Dash movement
-            this->pos += glm::normalize(direction) * this->dashSpeed * (float) deltaTime;
+            this->velocity = glm::normalize(direction) * this->dashSpeed;
 
             // Increase dashTimer
             this->dashTimer += deltaTime;
@@ -51,10 +51,43 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
                 this->dashCooldown = 2.0f;
             }
 
-        } else { // if not dashing, then regular movement
-            this->pos += glm::normalize(direction) * this->speed * (float) deltaTime;
+        } else {  // if not dashing, then regular movement with acceleration
+            glm::vec2 targetVelocity = glm::normalize(direction) * this->speed;
+
+            // Accelerate toward desired velocity
+            glm::vec2 deltaVelocity = targetVelocity - this->velocity;
+
+            // Accelerate if velocity is not the desired velocity
+            if (glm::length(deltaVelocity) != 0) {
+                glm::vec2 accelStep = glm::normalize(deltaVelocity) * this->acceleration;
+
+                // Clamp the acceleration step to prevent overshoot
+                if (glm::length(accelStep) > glm::length(deltaVelocity)) {
+                    accelStep = deltaVelocity;
+                }
+
+                this->velocity += accelStep;    
         }
     }
+
+    } else {
+        // Deacceleration
+        if (glm::length(this->velocity) > 0.01f) {
+            glm::vec2 decelStep = glm::normalize(this->velocity) * this->deacceleration;
+            
+            // Makes sure not to deaccelerate to much
+            if (this->deacceleration > glm::length(this->velocity)) {
+                this->velocity = glm::vec2(0.0f);
+            } else {
+                this->velocity -= decelStep;
+            }
+        } else {
+            this->velocity = glm::vec2(0.0f);
+        }        
+    }
+
+    // apply velocity to postion
+    this->pos += this->velocity * (float) deltaTime;
 
     // Dash cooldown management
     if(!this->dash && !this->isDashing) {
