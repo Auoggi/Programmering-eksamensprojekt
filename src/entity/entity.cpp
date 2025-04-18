@@ -34,6 +34,15 @@ void Entity::tick(Grid *grid) {
     }
 }
 
+bool Entity::collisionDetection(Entity *entity) {
+    // if stateement that controls collision
+    if((this->pos.x - this->width/2 < entity->pos.x + entity->width/2 && this->pos.x + this->width/2 > entity->pos.x - entity->width/2) &&
+        (this->pos.y - this->height/2 < entity->pos.y + entity->height/2 && this->pos.y + this->height/2 > entity->pos.y - entity->height/2)) {
+        return true;
+    }
+    return false;
+}
+
 void Entity::draw(Renderer *renderer, glm::mat4 view) {
     renderer->drawTexture(this->texture, view, glm::vec2(this->pos.x - this->width/2, this->pos.y - this->height/2), glm::vec2(this->width, this->height), 0);
 }

@@ -23,6 +23,8 @@ public:
 
     void tick(Grid *grid);
     void draw(Renderer *renderer, glm::mat4 view);
+
+    bool collisionDetection(Entity *entity);
 };
 
 #endif
