@@ -47,12 +47,15 @@ bool Entity::collisionDetection(Entity *entity) {
 }
 
 void Entity::handleCollision(Grid *grid) {
+    // loop through current and adjacent grid spaces
     for(int dx = -1; dx <= 1; dx++) {
         for(int dy = -1; dy <= 1; dy++) {
             glm::ivec2 currSelectedTile = this->currTilePos + glm::ivec2(dx, dy);
 
+            // using shared pointer to find entities occupying current selected tile
             std::shared_ptr<std::vector<Entity*>> tileEntities = grid->getEntityList(currSelectedTile);
 
+            // checks collisions
             for(Entity *otherEntity : *tileEntities) {
                 if (otherEntity == this) continue;
 
