@@ -35,12 +35,36 @@ void Entity::tick(Grid *grid) {
 }
 
 bool Entity::collisionDetection(Entity *entity) {
-    // if stateement that controls collision
+    /*/
+        if stateement that controls collision
+        All hitboxes are treated as squares 
+    /*/
     if((this->pos.x - this->width/2 < entity->pos.x + entity->width/2 && this->pos.x + this->width/2 > entity->pos.x - entity->width/2) &&
         (this->pos.y - this->height/2 < entity->pos.y + entity->height/2 && this->pos.y + this->height/2 > entity->pos.y - entity->height/2)) {
         return true;
     }
     return false;
+}
+
+void Entity::handleCollision(Grid *grid) {
+    for(int dx = -1; dx <= 1; dx++) {
+        for(int dy = -1; dy <= 1; dy++) {
+            glm::ivec2 currSelectedTile = this->currTilePos + glm::ivec2(dx, dy);
+
+            std::shared_ptr<std::vector<Entity*>> tileEntities = grid->getEntityList(currSelectedTile);
+
+            for(Entity *otherEntity : *tileEntities) {
+                if (otherEntity == this) continue;
+
+                if(this->collisionDetection(otherEntity)) {
+                    // add some effect of collision
+                }
+            }
+        }
+    }
+
+
+    
 }
 
 void Entity::draw(Renderer *renderer, glm::mat4 view) {
