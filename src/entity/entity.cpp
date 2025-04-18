@@ -65,9 +65,6 @@ void Entity::handleCollision(Grid *grid) {
             }
         }
     }
-
-
-    
 }
 
 void Entity::draw(Renderer *renderer, glm::mat4 view) {
