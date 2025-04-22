@@ -1,9 +1,8 @@
 #include "map.h"
 
-Map::Map(int tileSize, float screenWidth, float screenHeight, int mapWidth, int mapHeight, int *map) : tileSize(tileSize), shader(ResourceManager::setShader(GRID_VERTEX_GLSL, MAP_FRAGMENT_GLSL, "map")), tilemap(ResourceManager::loadTexture("assets/textures/tilemap.png", "tilemap")) {
+Map::Map(int tileSize, float screenWidth, float screenHeight, int mapWidth, int mapHeight, int *map) : tileSize(tileSize), shader(ResourceManager::setShader(FULLSCREEN_VERTEX_GLSL, MAP_FRAGMENT_GLSL, "map")), tilemap(ResourceManager::loadTexture("assets/textures/tilemap.png", "tilemap")) {
     // the tilemap is an 8x8 grid of 64x64 textures for use in rendering the map
-    int tilemapColumnCount = 8;
-    int tilemapRowCount = 8;
+    int tilemapColumnCount = 8, tilemapRowCount = 8;
 
     shader.use();
     // Map is sent to shader as a texture, and should therefore have a different value from image
