@@ -14,6 +14,7 @@ uniform sampler2D image;
 uniform sampler2D map;
 
 void main() {
+    // Screen height is subtracted from y coordinate because +y is down but y=0 is at the bottom of the screen
     vec4 tPos = view * vec4(-gl_FragCoord.x, gl_FragCoord.y - screenSize.y, 0, 1);
 
     // index of texture to display

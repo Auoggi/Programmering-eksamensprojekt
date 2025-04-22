@@ -6,7 +6,7 @@ Map::Map(int tileSize, float screenWidth, float screenHeight, int mapWidth, int 
 
     shader.use();
     // Map is sent to shader as a texture, and should therefore have a different value from image
-    shader.setInteger("map", 1); // Better commentry is needed
+    shader.setInteger("map", 1);
     shader.setInteger("image", 0);
     shader.setInteger("tileSize", tileSize);
     shader.setVector2f("screenSize", screenWidth, screenHeight);
@@ -14,8 +14,6 @@ Map::Map(int tileSize, float screenWidth, float screenHeight, int mapWidth, int 
     shader.setInteger("columnCount", tilemapColumnCount);
     shader.setInteger("rowCount", tilemapRowCount);
 
-    
-    // 5 and 5 are width and height
     GLubyte data[mapWidth * mapHeight * 4]; // RGBA
 
     for(int i = 0; i < mapWidth * mapHeight; i++) {
