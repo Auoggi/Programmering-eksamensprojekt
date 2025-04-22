@@ -35,10 +35,10 @@ void Entity::tick(Grid *grid) {
 }
 
 bool Entity::collisionDetection(Entity *entity) {
-    /*/
+    /*
         if stateement that controls collision
         All hitboxes are treated as squares 
-    /*/
+    */
     if((this->pos.x - this->width/2 < entity->pos.x + entity->width/2 && this->pos.x + this->width/2 > entity->pos.x - entity->width/2) &&
         (this->pos.y - this->height/2 < entity->pos.y + entity->height/2 && this->pos.y + this->height/2 > entity->pos.y - entity->height/2)) {
         return true;
@@ -57,7 +57,7 @@ void Entity::handleCollision(Grid *grid) {
 
             // checks collisions
             for(Entity *otherEntity : *tileEntities) {
-                if (otherEntity == this) continue;
+                if(otherEntity == this) continue;
 
                 if(this->collisionDetection(otherEntity)) {
                     // add some effect of collision
