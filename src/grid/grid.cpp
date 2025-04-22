@@ -1,7 +1,11 @@
 #include "grid.h"
 #include "../entity/entity.h" // Import Entity to define Entity class after the forward declaration
 
-Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileSize), shader(ResourceManager::setShader(GRID_VERTEX_GLSL, GRID_FRAGMENT_GLSL, "grid")) {
+Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileSize), shader(ResourceManager::setShader(FULLSCREEN_VERTEX_GLSL, GRID_FRAGMENT_GLSL, "grid")) {
+    this->shader.use();
+    this->shader.setFloat("tileSize", this->tileSize);
+    this->shader.setVector2f("screenSize", screenWidth, screenHeight);
+
     // Define fullscreen VAO, to let the fragment shader draw on the entiry screen
     float vertices[] = {
         0, 0,  
@@ -32,12 +36,9 @@ std::shared_ptr<std::vector<Entity*>> Grid::getEntityList(const glm::ivec2& pos)
     return entityMap[pos];
 }
 
-void Grid::draw(glm::mat4 view, int screenWidth, int screenHeight, int centerTileX, int centerTileY) {
+void Grid::draw(glm::mat4 view, int centerTileX, int centerTileY) {
     this->shader.use();
-
     this->shader.setMatrix4("view", view);
-    this->shader.setFloat("tileSize", this->tileSize);
-    this->shader.setVector2f("screenSize", screenWidth, screenHeight);
     this->shader.setVector2f("centerTile", centerTileX, centerTileY);
     
     glBindVertexArray(this->VAO);

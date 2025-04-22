@@ -9,6 +9,7 @@
 #include "render/renderer.h"
 #include "entity/player.h"
 #include "grid/grid.h"
+#include "map/map.h"
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -59,6 +60,16 @@ int main() {
     const int tileSize = 64;
     Grid *grid = new Grid(tileSize, (float) mode->width, (float) mode->height);
 
+    int mapArray[25] = {
+        0, 5, 9, 2, 0,
+        0, 8, 1, 14, 2,
+        0, 8, 1, 1, 6,
+        0, 4, 7, 7, 3,
+        0, 0, 0, 0, 0,
+    };
+
+    Map *map = new Map(tileSize, (float) mode->width, (float) mode->height, 5, 5, mapArray);
+
     while(!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
         deltaTime = currentTime - lastTime;
@@ -73,7 +84,9 @@ int main() {
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        grid->draw(view, screenWidth, screenHeight, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
+        map->draw(view);
+
+        grid->draw(view, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
         player->draw(renderer, view);       
         obstacle->draw(renderer, view);
 

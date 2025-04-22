@@ -1,5 +1,5 @@
 #version 330 core
-out vec4 FragColor;
+out vec4 fragColor;
 in vec2 fragCoord;
 
 uniform mat4 view;
@@ -15,15 +15,15 @@ void main() {
     // Highlight player collision tiles
     vec2 tilePos = floor(-tPos.xy / tileSize);
     if(tilePos == centerTile) {
-        FragColor = vec4(0.75, 0.2, 0.2, 1);
+        fragColor = vec4(0.75, 0.2, 0.2, 1);
     } else if(abs(tilePos.x - centerTile.x) <= 1 && abs(tilePos.y - centerTile.y) <= 1) {
-        FragColor = vec4(1, 0.8, 0, 1);
+        fragColor = vec4(1, 0.8, 0, 1);
     } else {
-        FragColor = vec4(0, 0, 0, 0);
+        fragColor = vec4(0, 0, 0, 0);
     }
 
-    FragColor = mix(
-        FragColor, 
+    fragColor = mix(
+        fragColor, 
         vec4(1, 1, 1, 1), 
         step(mod(tPos.x, tileSize), 1.0) + step(mod(tPos.y, tileSize), 1.0)
     );
