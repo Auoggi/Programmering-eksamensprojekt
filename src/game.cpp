@@ -8,6 +8,7 @@
 
 #include "render/renderer.h"
 #include "entity/player.h"
+#include "entity/enemy.h"
 #include "grid/grid.h"
 #include "map/map.h"
 
@@ -49,7 +50,7 @@ int main() {
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
     Player *player = new Player();
 
-    Entity *obstacle = new Entity("assets/textures/ball64.png", "obstacle", 64, 64, 0);
+    Entity *obstacle = new Enemy("assets/textures/ball64.png", "obstacle", 64, 64);
     obstacle->pos = glm::vec2(96, 96);
 
     double currentTime = glfwGetTime();
