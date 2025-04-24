@@ -14,8 +14,10 @@ public:
     glm::ivec2 prevTilePos, currTilePos;
     int width, height, health;
     glm::vec2 pos, velocity;
+    static int nextId;
     Texture texture;
     float speed;
+    int id;
 
     Entity(const char *texture, const char *textureName, int width, int height, int health);
 
