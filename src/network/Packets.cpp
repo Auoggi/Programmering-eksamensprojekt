@@ -55,10 +55,12 @@ public:
 // TODO: lær mere om virtual
 class Packet {
 public:
+    // virtual keyword is used to support runtime polymorphism, 
+    // so the child classes override the methods and the compiler knows to not use the base packet method but the child method
     virtual ~Packet() = default;
     virtual PacketType type() const = 0;
-    virtual std::string serialize() const = 0;
-    static std::unique_ptr<Packet> deserialize(std::string str);
+    virtual std::string serialize() const = 0; // will make packet contents to a string
+    static std::unique_ptr<Packet> deserialize(std::string str); // parses string contents to make it a packet
 };
 
 class MovementPacket : public Packet {
@@ -86,6 +88,103 @@ public:
     float x, y;
 };
 
+class AttackPacket : public Packet {
+public:
+    AttackPacket(int id, float attackType, float angle)
+        : id(id), attackType(attackType), angle(angle) {}
+
+    PacketType type() const override { return PacketType::ATTACK; }
+
+    std::string serialize() const override {
+        ByteBuffer buffer;
+        uint32_t payload_size = sizeof(id) + sizeof(attackType) + sizeof(angle);
+
+        buffer.put<uint32_t>(payload_size);
+        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+        buffer.put<int>(id);
+        buffer.put<int>(attackType);
+        buffer.put<float>(angle);
+
+        std::string str(buffer.data.begin(), buffer.data.end());
+        return str;
+    }
+    
+    int id, attackType;
+    float angle;
+};
+
+class StaminaPacket : public Packet {
+public:
+    StaminaPacket(int id, float stamina)
+        : id(id), stamina(stamina) {}
+
+    PacketType type() const override { return PacketType::STAMINA; }
+
+    std::string serialize() const override {
+        ByteBuffer buffer;
+        uint32_t payload_size = sizeof(id) + sizeof(stamina);
+
+        buffer.put<uint32_t>(payload_size);
+        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+        buffer.put<int>(id);
+        buffer.put<float>(stamina);
+
+        std::string str(buffer.data.begin(), buffer.data.end());
+        return str;
+    }
+    
+    int id;
+    float stamina;
+};
+
+class HealthPacket : public Packet {
+public:
+    HealthPacket(int id, float health)
+        : id(id), health(health) {}
+
+    PacketType type() const override { return PacketType::HEALTH; }
+
+    std::string serialize() const override {
+        ByteBuffer buffer;
+        uint32_t payload_size = sizeof(id) + sizeof(health);
+
+        buffer.put<uint32_t>(payload_size);
+        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+        buffer.put<int>(id);
+        buffer.put<float>(health);
+
+        std::string str(buffer.data.begin(), buffer.data.end());
+        return str;
+    }
+    
+    int id;
+    float health;
+};
+
+class UsePacket : public Packet {
+public:
+    UsePacket(int id, std::string use)
+        : id(id), use(use) {}
+
+    PacketType type() const override { return PacketType::USE; }
+
+    std::string serialize() const override {
+        ByteBuffer buffer;
+        uint32_t payload_size = sizeof(id) + use.size();
+
+        buffer.put<uint32_t>(payload_size);
+        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+        buffer.put<int>(id);
+        buffer.data.insert(buffer.data.end(), use.begin(), use.end());
+
+        std::string str(buffer.data.begin(), buffer.data.end());
+        return str;
+    }
+    
+    int id;
+    std::string use;
+};
+
 std::unique_ptr<Packet> Packet::deserialize(std::string str) {
     ByteBuffer buffer;
     buffer.data.assign(str.begin(), str.end());
@@ -100,6 +199,29 @@ std::unique_ptr<Packet> Packet::deserialize(std::string str) {
             float y = buffer.read<float>();
             return std::make_unique<MovementPacket>(id, x, y);
         }
+        case PacketType::ATTACK: {
+            int id = buffer.read<int>();
+            int attackType = buffer.read<int>();
+            float angle = buffer.read<float>();
+            return std::make_unique<AttackPacket>(id, attackType, angle);
+        }
+        case PacketType::STAMINA: {
+            int id = buffer.read<int>();
+            float stamina = buffer.read<float>();
+            return std::make_unique<StaminaPacket>(id, stamina);
+        }
+        case PacketType::HEALTH: {
+            int id = buffer.read<int>();
+            float health = buffer.read<float>();
+            return std::make_unique<HealthPacket>(id, health);
+        }
+        case PacketType::USE: {
+            int id = buffer.read<int>();
+            std::string use;
+            use.insert(use.end(), &buffer.data[buffer.read_offset], &buffer.data[buffer.read_offset] + length);
+            buffer.read_offset += length;
+            return std::make_unique<UsePacket>(id, use);
+        }
         default:
             throw std::invalid_argument("Unknown PacketType");
     };
@@ -111,18 +233,48 @@ T& as(Packet& pkt) {
 }
 
 int main() {
-    MovementPacket packet(2, 5.5, 8.2);
+    UsePacket packet(2, "hello");
 
     std::string packet_string = packet.serialize();
     std::unique_ptr<Packet> pkt = Packet::deserialize(packet_string);
 
     switch (pkt->type()) {
-        case PacketType::MOVEMENT:
+        case PacketType::MOVEMENT: {
             std::cout << "Packet is of type MOVEMENT" << std::endl;
             MovementPacket& mov = as<MovementPacket>(*pkt);
             std::cout << "id: " << mov.id << std::endl;
             std::cout << "x: " << mov.x << std::endl;
             std::cout << "y: " << mov.y << std::endl;
             break;
+        }
+        case PacketType::ATTACK: {
+            std::cout << "Packet is of type ATTACK" << std::endl;
+            AttackPacket& atk = as<AttackPacket>(*pkt);
+            std::cout << "id: " << atk.id << std::endl;
+            std::cout << "attackType: " << atk.attackType << std::endl;
+            std::cout << "angle: " << atk.angle << std::endl;
+            break;
+        }
+        case PacketType::STAMINA: {
+            std::cout << "Packet is of type STAMINA" << std::endl;
+            StaminaPacket& sta = as<StaminaPacket>(*pkt);
+            std::cout << "id: " << sta.id << std::endl;
+            std::cout << "stamina: " << sta.stamina << std::endl;
+            break;
+        }
+        case PacketType::HEALTH: {
+            std::cout << "Packet is of type HEALTH" << std::endl;
+            HealthPacket& hea = as<HealthPacket>(*pkt);
+            std::cout << "id: " << hea.id << std::endl;
+            std::cout << "health: " << hea.health << std::endl;
+            break;
+        }
+        case PacketType::USE: {
+            std::cout << "Packet is of type USE" << std::endl;
+            UsePacket& use = as<UsePacket>(*pkt);
+            std::cout << "id: " << use.id << std::endl;
+            std::cout << "use: " << use.use << std::endl;
+            break;
+        }
     }
 }
