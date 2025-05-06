@@ -51,18 +51,19 @@ public:
 };
 
 // packet:
+// every packet has an id
 // [ length: 4-byte ][ type: 1-byte ][ payload... ]
-// TODO: lær mere om virtual
 class Packet {
 public:
     // virtual keyword is used to support runtime polymorphism, 
-    // so the child classes override the methods and the compiler knows to not use the base packet method but the child method
+    // so the compiler knows to use the child methods rather than the parent methods with a vtable
     virtual ~Packet() = default;
     virtual PacketType type() const = 0;
     virtual std::string serialize() const = 0; // will make packet contents to a string
     static std::unique_ptr<Packet> deserialize(std::string str); // parses string contents to make it a packet
 };
 
+// contains x and y position
 class MovementPacket : public Packet {
 public:
     MovementPacket(int id, float x, float y)
@@ -88,6 +89,7 @@ public:
     float x, y;
 };
 
+// contains angle and attacktype
 class AttackPacket : public Packet {
 public:
     AttackPacket(int id, float attackType, float angle)
@@ -113,6 +115,7 @@ public:
     float angle;
 };
 
+// contains current stamina
 class StaminaPacket : public Packet {
 public:
     StaminaPacket(int id, float stamina)
@@ -137,6 +140,7 @@ public:
     float stamina;
 };
 
+// contains current health
 class HealthPacket : public Packet {
 public:
     HealthPacket(int id, float health)
@@ -161,6 +165,7 @@ public:
     float health;
 };
 
+// contains item used
 class UsePacket : public Packet {
 public:
     UsePacket(int id, std::string use)
@@ -227,6 +232,7 @@ std::unique_ptr<Packet> Packet::deserialize(std::string str) {
     };
 }
 
+// will make the unique pointer to the type specified
 template<typename T>
 T& as(Packet& pkt) {
     return dynamic_cast<T&>(pkt); // Throws if wrong type
