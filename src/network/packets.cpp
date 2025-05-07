@@ -1,10 +1,6 @@
 #include <string>
 #include <memory>
-#include <string_view>
 #include <vector>
-
-#include <cstdint>
-#include <cstring>
 #include <iostream>
 
 //https://chatgpt.com/share/68163d5f-c924-8003-97de-ff7cd7625af8
@@ -51,7 +47,6 @@ public:
 };
 
 // packet:
-// every packet has an id
 // [ length: 4-byte ][ type: 1-byte ][ payload... ]
 class Packet {
 public:
@@ -240,7 +235,7 @@ T& to_packet(Packet& pkt) {
     return dynamic_cast<T&>(pkt); // Throws if wrong type
 }
 
-int main() {
+int _main() {
     UsePacket packet(2, "hello");
 
     std::string packet_string = packet.serialize();
