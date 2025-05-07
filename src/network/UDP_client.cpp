@@ -19,7 +19,7 @@ public:
         socket_.send_to(boost::asio::buffer("\0"), receiverEndpoint);
     }
 
-    void send_message(std::string text) {
+    void sendMessage(std::string text) {
         socket_.send_to(boost::asio::buffer(text), receiverEndpoint);
     }
 
@@ -35,11 +35,11 @@ private:
     udp::resolver resolver;
     udp::endpoint receiverEndpoint;
     udp::endpoint senderEndpoint;
-    boost::array<char, 128> recvBuf;
+    boost::array<char, 2048> recvBuf;
 };
 
 
-int main(int argc, char* argv[]) {
+int _main(int argc, char* argv[]) {
     try {
         if (argc != 2) {
             std::cerr << "Usage: client <host>" << std::endl;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 
         udpClient udpClient(ioContext);
         udpClient.connect(argv[1], "8080");
-        udpClient.send_message("HI");
+        udpClient.sendMessage("HI");
         
         for (;;)
         {
