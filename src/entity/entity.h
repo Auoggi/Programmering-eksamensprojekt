@@ -21,8 +21,8 @@ public:
 
     glm::ivec2 getTileCoords(Grid *grid);
 
-    void tick(Grid *grid);
     void handleCollision(Grid *grid);
+    void tick(Grid *grid, double deltaTime);
     bool collisionDetection(Entity *entity);
     void draw(Renderer *renderer, glm::mat4 view);
 };

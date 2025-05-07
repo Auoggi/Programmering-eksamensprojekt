@@ -80,6 +80,9 @@ int main() {
         glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
         
         player->processInput(window, deltaTime);
+        player->tick(grid, deltaTime);
+
+        fprintf(stdout, "%f \n", player->velocity);
 
         glm::mat4 view = player->getView(screenWidth, screenHeight);
         glViewport(0, 0, screenWidth, screenHeight);

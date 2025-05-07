@@ -9,7 +9,7 @@ glm::ivec2 Entity::getTileCoords(Grid *grid) {
     return glm::ivec2(floor(this->pos.x / grid->tileSize), floor(this->pos.y / grid->tileSize));
 }
 
-void Entity::tick(Grid *grid) {
+void Entity::tick(Grid *grid, double deltaTime) {
     this->prevTilePos = this->currTilePos;
     this->currTilePos = getTileCoords(grid);
 
@@ -32,6 +32,9 @@ void Entity::tick(Grid *grid) {
         // Add self to new tile position
         grid->getEntityList(this->currTilePos)->push_back(this);
     }
+
+    // Entity movement
+    this->pos += this->velocity * (float) deltaTime;
 }
 
 bool Entity::collisionDetection(Entity *entity) {

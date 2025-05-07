@@ -87,9 +87,6 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
         }        
     }
 
-    // apply velocity to postion
-    this->pos += this->velocity * (float) deltaTime;
-
     // Dash cooldown management
     if(!this->dash && !this->isDashing) {
         this->dashCooldown -= deltaTime;
