@@ -59,8 +59,10 @@ public:
     // so the compiler knows to use the child methods rather than the parent methods with a vtable
     virtual ~Packet() = default;
     virtual PacketType type() const = 0;
-    virtual std::string serialize() const = 0; // will make packet contents to a string
-    static std::unique_ptr<Packet> deserialize(std::string str); // parses string contents to make it a packet
+    // will make packet contents to a string
+    virtual std::string serialize() const = 0; 
+    // parses string contents to make it a packet
+    static std::unique_ptr<Packet> deserialize(std::string str); // unique_ptr is used so that you can use base methods like type
 };
 
 // contains x and y position
@@ -234,7 +236,7 @@ std::unique_ptr<Packet> Packet::deserialize(std::string str) {
 
 // will make the unique pointer to the type specified
 template<typename T>
-T& as(Packet& pkt) {
+T& to_packet(Packet& pkt) {
     return dynamic_cast<T&>(pkt); // Throws if wrong type
 }
 
@@ -247,7 +249,7 @@ int main() {
     switch (pkt->type()) {
         case PacketType::MOVEMENT: {
             std::cout << "Packet is of type MOVEMENT" << std::endl;
-            MovementPacket& mov = as<MovementPacket>(*pkt);
+            MovementPacket& mov = to_packet<MovementPacket>(*pkt);
             std::cout << "id: " << mov.id << std::endl;
             std::cout << "x: " << mov.x << std::endl;
             std::cout << "y: " << mov.y << std::endl;
@@ -255,7 +257,7 @@ int main() {
         }
         case PacketType::ATTACK: {
             std::cout << "Packet is of type ATTACK" << std::endl;
-            AttackPacket& atk = as<AttackPacket>(*pkt);
+            AttackPacket& atk = to_packet<AttackPacket>(*pkt);
             std::cout << "id: " << atk.id << std::endl;
             std::cout << "attackType: " << atk.attackType << std::endl;
             std::cout << "angle: " << atk.angle << std::endl;
@@ -263,21 +265,21 @@ int main() {
         }
         case PacketType::STAMINA: {
             std::cout << "Packet is of type STAMINA" << std::endl;
-            StaminaPacket& sta = as<StaminaPacket>(*pkt);
+            StaminaPacket& sta = to_packet<StaminaPacket>(*pkt);
             std::cout << "id: " << sta.id << std::endl;
             std::cout << "stamina: " << sta.stamina << std::endl;
             break;
         }
         case PacketType::HEALTH: {
             std::cout << "Packet is of type HEALTH" << std::endl;
-            HealthPacket& hea = as<HealthPacket>(*pkt);
+            HealthPacket& hea = to_packet<HealthPacket>(*pkt);
             std::cout << "id: " << hea.id << std::endl;
             std::cout << "health: " << hea.health << std::endl;
             break;
         }
         case PacketType::USE: {
             std::cout << "Packet is of type USE" << std::endl;
-            UsePacket& use = as<UsePacket>(*pkt);
+            UsePacket& use = to_packet<UsePacket>(*pkt);
             std::cout << "id: " << use.id << std::endl;
             std::cout << "use: " << use.use << std::endl;
             break;
