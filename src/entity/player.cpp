@@ -68,8 +68,8 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
                 }
 
                 this->velocity += accelStep;    
+            }
         }
-    }
 
     } else {
         // Deacceleration
