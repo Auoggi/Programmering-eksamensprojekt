@@ -11,17 +11,18 @@
 
 class Entity {
 public:
+    float speed, acceleration, deacceleration;
     glm::ivec2 prevTilePos, currTilePos;
     int width, height, health;
     glm::vec2 pos, velocity;
     Texture texture;
-    float speed;
 
     Entity(const char *texture, const char *textureName, int width, int height, int health);
 
     glm::ivec2 getTileCoords(Grid *grid);
 
     void handleCollision(Grid *grid);
+    float distanceTo(Entity *otherEntity);
     void tick(Grid *grid, double deltaTime);
     bool collisionDetection(Entity *entity);
     void draw(Renderer *renderer, glm::mat4 view);

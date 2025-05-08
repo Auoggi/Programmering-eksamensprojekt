@@ -91,7 +91,7 @@ int main() {
 
         map->draw(view);
 
-        grid->draw(view, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
+        //grid->draw(view, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
         player->draw(renderer, view);       
         obstacle->draw(renderer, view);
 

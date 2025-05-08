@@ -1,7 +1,7 @@
 #include "entity.h"
 
 Entity::Entity(const char *texture, const char *textureName, int width, int height, int health) : pos(glm::vec2(0, 0)), currTilePos(glm::ivec2(0, 0)),
-                 speed(300), width(width), height(height), velocity(glm::vec2(0, 0)) {
+                 speed(300), width(width), height(height), velocity(glm::vec2(0, 0)), acceleration(125.0f), deacceleration(150.0f) {
     this->texture = ResourceManager::loadTexture(texture, textureName);
 }
 
@@ -68,6 +68,10 @@ void Entity::handleCollision(Grid *grid) {
             }
         }
     }
+}
+
+float Entity::distanceTo(Entity *otherEntity) {
+    return glm::sqrt(glm::pow(this->pos.x-otherEntity->pos.x, 2) + glm::pow(this->pos.y-otherEntity->pos.y, 2));
 }
 
 void Entity::draw(Renderer *renderer, glm::mat4 view) {
