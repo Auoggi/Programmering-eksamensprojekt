@@ -50,7 +50,7 @@ int main() {
     Renderer *renderer = Renderer::setupRenderer(mode->width, mode->height);
     Player *player = new Player();
 
-    Entity *obstacle = new Enemy("assets/textures/ball64.png", "obstacle", 64, 64);
+    Enemy *obstacle = new Enemy("assets/textures/ball64.png", "obstacle", 64, 64);
     obstacle->pos = glm::vec2(96, 96);
 
     double currentTime = glfwGetTime();
@@ -82,7 +82,8 @@ int main() {
         player->processInput(window, deltaTime);
         player->tick(grid, deltaTime);
 
-        fprintf(stdout, "%f \n", player->velocity);
+        obstacle->pathfinding(player);
+        obstacle->tick(grid, deltaTime);
 
         glm::mat4 view = player->getView(screenWidth, screenHeight);
         glViewport(0, 0, screenWidth, screenHeight);
