@@ -70,7 +70,6 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
                 this->velocity += accelStep;    
             }
         }
-
     } else {
         // Deacceleration
         if (glm::length(this->velocity) > 0.01f) {
