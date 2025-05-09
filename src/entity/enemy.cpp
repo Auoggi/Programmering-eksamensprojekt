@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include "projektil.h"
 
 Enemy::Enemy(const char *image, const char *name, int width, int height) : Entity(image, name, width, height, 100) {
     this->speed = 250;

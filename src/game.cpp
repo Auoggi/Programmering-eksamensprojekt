@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "entity/projektil.h"
 #include "render/renderer.h"
 #include "entity/player.h"
 #include "entity/enemy.h"

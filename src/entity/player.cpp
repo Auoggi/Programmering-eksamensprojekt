@@ -1,4 +1,5 @@
 #include "player.h"
+#include "projektil.h"
 
 Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(25.0f), dash(true), isDashing(false),
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
