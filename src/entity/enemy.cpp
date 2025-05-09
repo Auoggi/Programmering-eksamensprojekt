@@ -4,7 +4,7 @@ Enemy::Enemy(const char *image, const char *name, int width, int height) : Entit
     this->speed = 250;
 }
 
-void Enemy::pathfinding(Entity *target) {
+void Enemy::tick(Entity *target, double deltaTime, Grid *grid) {
     glm::vec2 targetVelocity;
 
     if(this->distanceTo(target) < 256) {
@@ -29,4 +29,11 @@ void Enemy::pathfinding(Entity *target) {
 
         this->velocity += accelStep;    
     }
+
+    // Call parrent tick function
+    Entity::tick(grid, deltaTime);
+}
+
+void Enemy::onCollision(Entity *otherEntity) {
+    
 }

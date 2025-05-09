@@ -33,6 +33,9 @@ void Entity::tick(Grid *grid, double deltaTime) {
         grid->getEntityList(this->currTilePos)->push_back(this);
     }
 
+    // Collision detection
+    this->handleCollision(grid);
+    
     // Entity movement
     this->pos += this->velocity * (float) deltaTime;
 }
@@ -49,6 +52,10 @@ bool Entity::collisionDetection(Entity *entity) {
     return false;
 }
 
+void Entity::onCollision(Entity *otherEntity) {
+    this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
+}
+
 void Entity::handleCollision(Grid *grid) {
     // loop through current and adjacent grid spaces
     for(int dx = -1; dx <= 1; dx++) {
@@ -63,7 +70,7 @@ void Entity::handleCollision(Grid *grid) {
                 if(otherEntity == this) continue;
 
                 if(this->collisionDetection(otherEntity)) {
-                    // add some effect of collision
+                    this->onCollision(otherEntity);
                 }
             }
         }

@@ -11,7 +11,8 @@ class Enemy: public Entity {
 public:
     Enemy(const char *image, const char *name, int witdh, int heigt);
 
-    void pathfinding(Entity *target);
+    void tick(Entity *target, double deltaTime, Grid *grid);
+    void onCollision(Entity *otherEntity);
 };
 
 #endif

@@ -79,11 +79,9 @@ int main() {
         int screenWidth, screenHeight;
         glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
         
-        player->processInput(window, deltaTime);
-        player->tick(grid, deltaTime);
+        player->tick(window, deltaTime, grid);
 
-        obstacle->pathfinding(player);
-        obstacle->tick(grid, deltaTime);
+        obstacle->tick(player, deltaTime, grid);
 
         glm::mat4 view = player->getView(screenWidth, screenHeight);
         glViewport(0, 0, screenWidth, screenHeight);

@@ -14,8 +14,9 @@ public:
 
     Player();
 
-    void processInput(GLFWwindow *window, double deltaTime);
+    void tick(GLFWwindow *window, double deltaTime, Grid *grid);
     glm::mat4 getView(int width, int height);
+    void onCollision(Entity *otherEntity);
 };
 
 #endif

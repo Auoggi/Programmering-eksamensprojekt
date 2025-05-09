@@ -4,7 +4,7 @@ Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), st
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
                             staminaRegenRate(1.0f) {}
 
-void Player::processInput(GLFWwindow *window, double deltaTime) {
+void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
     glm::vec2 direction = glm::vec2(0, 0);
 
     // If statements that detects user input
@@ -100,6 +100,13 @@ void Player::processInput(GLFWwindow *window, double deltaTime) {
         this->stamina += this->staminaRegenRate * deltaTime;
         if(this->stamina > 25) this->stamina = 25.0f;
     } 
+
+    // Call parrent tick function
+    Entity::tick(grid, deltaTime);
+}
+
+void Player::onCollision(Entity *otherEntity) {
+
 }
 
 glm::mat4 Player::getView(int screenWidth, int screenHeight) {

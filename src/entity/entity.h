@@ -23,6 +23,7 @@ public:
 
     void handleCollision(Grid *grid);
     float distanceTo(Entity *otherEntity);
+    void onCollision(Entity *otherEntity); 
     void tick(Grid *grid, double deltaTime);
     bool collisionDetection(Entity *entity);
     void draw(Renderer *renderer, glm::mat4 view);
