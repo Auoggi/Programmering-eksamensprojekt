@@ -1,9 +1,12 @@
 #include "projektil.h"
 
-Projektil::Projektil() : Entity("assets/textures/ball.png", "player", 10, 10, 0) {}
+Projektil::Projektil(glm::vec2 startPos, glm::vec2 targetPos) : Entity("assets/textures/ball.png", "player", 10, 10, 0) {
+    this->speed = 200;
+    this->pos = startPos;
+    this->velocity = -glm::vec2(startPos.x - targetPos.x, startPos.y - targetPos.y) * this->speed;
+}
 
-void Projektil::tick(double deltaTime, Grid *grid) {
-
+void Projektil::tick(Grid *grid, double deltaTime) {
 
     // Call parrent tick function
     Entity::tick(grid, deltaTime);

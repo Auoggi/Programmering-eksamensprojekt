@@ -5,7 +5,7 @@ Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), st
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
                             staminaRegenRate(1.0f) {}
 
-void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
+void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid, std::vector<Entity*> *entityList) {
     glm::vec2 direction = glm::vec2(0, 0);
 
     // If statements that detects user input
@@ -20,6 +20,14 @@ void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
     }
     if(glfwGetKey(window, GLFW_KEY_A)) {
         direction += glm::vec2(-1, 0);
+    }
+    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+        glm::vec2 mousePos = glm::vec2(mouseX, mouseY);
+
+        Projektil *shot = new Projektil(this->pos, mousePos);
+        entityList->push_back(shot);
     }
 
     // Dashing feature and player movement

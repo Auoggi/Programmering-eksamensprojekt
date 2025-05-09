@@ -54,6 +54,8 @@ int main() {
     Enemy *obstacle = new Enemy("assets/textures/ball64.png", "obstacle", 64, 64);
     obstacle->pos = glm::vec2(96, 96);
 
+    std::vector<Entity*> entityList; 
+
     double currentTime = glfwGetTime();
     double lastTime = currentTime;
     double deltaTime;
@@ -80,8 +82,7 @@ int main() {
         int screenWidth, screenHeight;
         glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
         
-        player->tick(window, deltaTime, grid);
-
+        player->tick(window, deltaTime, grid, &entityList);
         obstacle->tick(player, deltaTime, grid);
 
         glm::mat4 view = player->getView(screenWidth, screenHeight);
@@ -91,7 +92,12 @@ int main() {
         map->draw(view);
 
         //grid->draw(view, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
-        player->draw(renderer, view);       
+        for (Entity* entity : entityList) {
+            entity->draw(renderer, view);
+            entity->tick(grid, deltaTime);
+        }
+
+        player->draw(renderer, view);
         obstacle->draw(renderer, view);
 
         glfwSwapBuffers(window);

@@ -8,9 +8,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 class Projektil : public Entity {
-    Projektil();
+public:
+    Projektil(glm::vec2 startPos, glm::vec2 targetPos);
 
-    void tick(double deltaTime, Grid *grid);
+    void tick(Grid *grid, double deltaTime);
     void onCollision(Entity *otherEntity);
 };
 
