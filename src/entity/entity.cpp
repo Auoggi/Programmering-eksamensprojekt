@@ -9,7 +9,7 @@ glm::ivec2 Entity::getTileCoords(Grid *grid) {
     return glm::ivec2(floor(this->pos.x / grid->tileSize), floor(this->pos.y / grid->tileSize));
 }
 
-void Entity::tick(Grid *grid, double deltaTime) {
+void Entity::tick(Grid *grid, Map *map, double deltaTime) {
     this->prevTilePos = this->currTilePos;
     this->currTilePos = getTileCoords(grid);
 
@@ -34,7 +34,7 @@ void Entity::tick(Grid *grid, double deltaTime) {
     }
 
     // Collision detection
-    this->handleCollision(grid);
+    this->handleCollision(grid, map);
     
     // Entity movement
     this->pos += this->velocity * (float) deltaTime;
@@ -56,7 +56,7 @@ void Entity::onCollision(Entity *otherEntity) {
     this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
 }
 
-void Entity::handleCollision(Grid *grid) {
+void Entity::handleCollision(Grid *grid, Map *map) {
     // loop through current and adjacent grid spaces
     for(int dx = -1; dx <= 1; dx++) {
         for(int dy = -1; dy <= 1; dy++) {

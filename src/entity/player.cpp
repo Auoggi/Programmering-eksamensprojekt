@@ -4,7 +4,7 @@ Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), st
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
                             staminaRegenRate(1.0f) {}
 
-void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
+void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid, Map *map) {
     glm::vec2 direction = glm::vec2(0, 0);
 
     // If statements that detects user input
@@ -102,7 +102,7 @@ void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
     } 
 
     // Call parrent tick function
-    Entity::tick(grid, deltaTime);
+    Entity::tick(grid, map, deltaTime);
 }
 
 void Player::onCollision(Entity *otherEntity) {

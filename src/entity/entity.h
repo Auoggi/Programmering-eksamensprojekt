@@ -4,6 +4,7 @@
 // Renderer needs to be included first, as glad.h cannot be included after glfw3.h
 #include "../render/renderer.h"
 #include "../grid/grid.h"
+#include "../map/map.h" 
 
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -21,10 +22,10 @@ public:
 
     glm::ivec2 getTileCoords(Grid *grid);
 
-    void handleCollision(Grid *grid);
+    void handleCollision(Grid *grid, Map *map);
     float distanceTo(Entity *otherEntity);
     void onCollision(Entity *otherEntity); 
-    void tick(Grid *grid, double deltaTime);
+    void tick(Grid *grid, Map *map, double deltaTime);
     bool collisionDetection(Entity *entity);
     void draw(Renderer *renderer, glm::mat4 view);
 };

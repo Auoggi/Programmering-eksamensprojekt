@@ -4,7 +4,7 @@ Enemy::Enemy(const char *image, const char *name, int width, int height) : Entit
     this->speed = 250;
 }
 
-void Enemy::tick(Entity *target, double deltaTime, Grid *grid) {
+void Enemy::tick(Entity *target, double deltaTime, Grid *grid, Map *map) {
     glm::vec2 targetVelocity;
 
     if(this->distanceTo(target) < 256) {
@@ -31,7 +31,7 @@ void Enemy::tick(Entity *target, double deltaTime, Grid *grid) {
     }
 
     // Call parrent tick function
-    Entity::tick(grid, deltaTime);
+    Entity::tick(grid, map, deltaTime);
 }
 
 void Enemy::onCollision(Entity *otherEntity) {

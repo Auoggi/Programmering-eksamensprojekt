@@ -61,15 +61,23 @@ int main() {
     const int tileSize = 64;
     Grid *grid = new Grid(tileSize, (float) mode->width, (float) mode->height);
 
-    int mapArray[25] = {
-        0, 5, 9, 2, 0,
-        0, 8, 1, 14, 2,
-        0, 8, 1, 1, 6,
-        0, 4, 7, 7, 3,
-        0, 0, 0, 0, 0,
+    int mapArray[156] = {
+        0,0,0,0,0,0,0,0,0,0,0,0,
+        0,5,9,9,9,9,9,9,2,0,0,0,
+        0,8,1,1,1,1,1,1,6,0,0,0,
+        0,8,1,1,1,1,1,1,6,0,0,0,
+        0,8,1,1,1,1,1,1,14,9,2,0,
+        0,4,7,16,1,1,1,1,1,1,6,0,
+        0,0,0,8,1,1,1,1,1,1,6,0,
+        0,5,9,17,1,1,1,1,1,1,6,0,
+        0,8,1,1,1,1,1,1,15,7,3,0,
+        0,8,1,1,1,1,1,1,6,0,0,0,
+        0,8,1,1,1,1,1,1,6,0,0,0,
+        0,4,7,7,7,7,7,7,3,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0,
     };
 
-    Map *map = new Map(tileSize, (float) mode->width, (float) mode->height, 5, 5, mapArray);
+    Map *map = new Map(tileSize, (float) mode->width, (float) mode->height, 12, 13, mapArray);
 
     while(!glfwWindowShouldClose(window)) {
         currentTime = glfwGetTime();
@@ -79,9 +87,9 @@ int main() {
         int screenWidth, screenHeight;
         glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
         
-        player->tick(window, deltaTime, grid);
+        player->tick(window, deltaTime, grid, map);
 
-        obstacle->tick(player, deltaTime, grid);
+        obstacle->tick(player, deltaTime, grid, map);
 
         glm::mat4 view = player->getView(screenWidth, screenHeight);
         glViewport(0, 0, screenWidth, screenHeight);

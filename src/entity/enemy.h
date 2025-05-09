@@ -11,7 +11,7 @@ class Enemy: public Entity {
 public:
     Enemy(const char *image, const char *name, int witdh, int heigt);
 
-    void tick(Entity *target, double deltaTime, Grid *grid);
+    void tick(Entity *target, double deltaTime, Grid *grid, Map *map);
     void onCollision(Entity *otherEntity);
 };
 
