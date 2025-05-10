@@ -15,10 +15,10 @@ mark_as_advanced(boost_system_DIR)
 get_filename_component(_BOOST_CMAKEDIR "${CMAKE_CURRENT_LIST_DIR}/../" REALPATH)
 
 # If the computed and the original directories are symlink-equivalent, use original
-if(EXISTS "/home/agchr/Downloads/boost-install/windows/lib/cmake")
-  get_filename_component(_BOOST_CMAKEDIR_ORIGINAL "/home/agchr/Downloads/boost-install/windows/lib/cmake" REALPATH)
+if(EXISTS "/home/agchr/Documents/projekter/Programmering-eksamensprojekt/boost/windows/lib/cmake")
+  get_filename_component(_BOOST_CMAKEDIR_ORIGINAL "/home/agchr/Documents/projekter/Programmering-eksamensprojekt/boost/windows/lib/cmake" REALPATH)
   if(_BOOST_CMAKEDIR STREQUAL _BOOST_CMAKEDIR_ORIGINAL)
-    set(_BOOST_CMAKEDIR "/home/agchr/Downloads/boost-install/windows/lib/cmake")
+    set(_BOOST_CMAKEDIR "/home/agchr/Documents/projekter/Programmering-eksamensprojekt/boost/windows/lib/cmake")
   endif()
   unset(_BOOST_CMAKEDIR_ORIGINAL)
 endif()
