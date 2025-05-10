@@ -5,7 +5,7 @@ Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), st
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
                             staminaRegenRate(1.0f) {}
 
-void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid, std::vector<Entity*> *entityList) {
+void Player::tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *grid, std::vector<Entity*> *entityList) {
     glm::vec2 direction = glm::vec2(0, 0);
 
     // If statements that detects user input
@@ -24,9 +24,11 @@ void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid, std::vector<
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
         double mouseX, mouseY;
         glfwGetCursorPos(window, &mouseX, &mouseY);
-        glm::vec2 mousePos = glm::vec2(mouseX, mouseY);
 
-        Projektil *shot = new Projektil(this->pos, mousePos);
+        glm::vec2 cameraPos = glm::vec2(glm::inverse(view)[3]);
+        glm::vec2 worldMousePos = glm::vec2(mouseX, mouseY) + cameraPos;
+
+        Projektil *shot = new Projektil(this->pos, worldMousePos);
         entityList->push_back(shot);
     }
 

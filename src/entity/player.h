@@ -17,7 +17,7 @@ public:
 
     Player();
 
-    void tick(GLFWwindow *window, double deltaTime, Grid *grid, std::vector<Entity*> *entityList);
+    void tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *grid, std::vector<Entity*> *entityList);
     glm::mat4 getView(int width, int height);
     void onCollision(Entity *otherEntity);
 };

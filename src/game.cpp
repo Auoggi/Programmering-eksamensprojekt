@@ -54,7 +54,7 @@ int main() {
     Enemy *obstacle = new Enemy("assets/textures/ball64.png", "obstacle", 64, 64);
     obstacle->pos = glm::vec2(96, 96);
 
-    std::vector<Entity*> entityList; 
+    std::vector<Entity*> entityList;
 
     double currentTime = glfwGetTime();
     double lastTime = currentTime;
@@ -81,11 +81,15 @@ int main() {
         
         int screenWidth, screenHeight;
         glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-        
-        player->tick(window, deltaTime, grid, &entityList);
+
+        // Calculate view for use in player->tick
+        glm::mat4 view = player->getView(screenWidth, screenHeight);
+
+        player->tick(window, view, deltaTime, grid, &entityList);
         obstacle->tick(player, deltaTime, grid);
 
-        glm::mat4 view = player->getView(screenWidth, screenHeight);
+        // Update view for camera position
+        view = player->getView(screenWidth, screenHeight);
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
