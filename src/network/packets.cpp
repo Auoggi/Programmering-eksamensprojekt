@@ -1,7 +1,9 @@
 #include <string>
 #include <memory>
+#include <cstring>
 #include <vector>
-#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 
 //https://chatgpt.com/share/68163d5f-c924-8003-97de-ff7cd7625af8
 
@@ -22,7 +24,7 @@ public:
     template<typename T>
     void put(T value) { 
         static_assert(std::is_trivially_copyable_v<T>, "Only trivial types allowed");
-        char* p = reinterpret_cast<char*>(&value); // reinterprets the given values information to be the type specified (so as a char*)
+        char* p = reinterpret_cast<char*>(&value); // reinterprets the values bytes to be the type specified (so as a char*)
         data.insert(data.end(), p, p + sizeof(T));
     }
 
@@ -31,7 +33,7 @@ public:
     T read() { 
         static_assert(std::is_trivially_copyable_v<T>, "Only trivial types allowed");
         if (read_offset + sizeof(T) > data.size()) {
-            throw std::runtime_error("Read past end of buffer");
+            throw "Read past end of buffer";
         }
 
         T value;
@@ -225,7 +227,7 @@ std::unique_ptr<Packet> Packet::deserialize(std::string str) {
             return std::make_unique<UsePacket>(id, use);
         }
         default:
-            throw std::invalid_argument("Unknown PacketType");
+            throw "Unknown PacketType";
     };
 }
 
@@ -243,40 +245,40 @@ int _main() {
 
     switch (pkt->type()) {
         case PacketType::MOVEMENT: {
-            std::cout << "Packet is of type MOVEMENT" << std::endl;
+            fprintf(stdout, "Packet is of type MOVEMENT\n");
             MovementPacket& mov = to_packet<MovementPacket>(*pkt);
-            std::cout << "id: " << mov.id << std::endl;
-            std::cout << "x: " << mov.x << std::endl;
-            std::cout << "y: " << mov.y << std::endl;
+            fprintf(stdout, "id: %i\n", mov.id);
+            fprintf(stdout, "x: %f\n", mov.x);
+            fprintf(stdout, "y: %f\n", mov.y);
             break;
         }
         case PacketType::ATTACK: {
-            std::cout << "Packet is of type ATTACK" << std::endl;
+            fprintf(stdout, "Packet is of type ATTACK\n");
             AttackPacket& atk = to_packet<AttackPacket>(*pkt);
-            std::cout << "id: " << atk.id << std::endl;
-            std::cout << "attackType: " << atk.attackType << std::endl;
-            std::cout << "angle: " << atk.angle << std::endl;
+            fprintf(stdout, "id: %i\n", atk.id);
+            fprintf(stdout, "attackType: %i\n", atk.attackType);
+            fprintf(stdout, "angle: %f\n", atk.angle);
             break;
         }
         case PacketType::STAMINA: {
-            std::cout << "Packet is of type STAMINA" << std::endl;
+            fprintf(stdout, "Packet is of type STAMINA\n");
             StaminaPacket& sta = to_packet<StaminaPacket>(*pkt);
-            std::cout << "id: " << sta.id << std::endl;
-            std::cout << "stamina: " << sta.stamina << std::endl;
+            fprintf(stdout, "id: %i\n", sta.id);
+            fprintf(stdout, "stamina: %f\n", sta.stamina);
             break;
         }
         case PacketType::HEALTH: {
-            std::cout << "Packet is of type HEALTH" << std::endl;
+            fprintf(stdout, "Packet is of type HEALTH\n");
             HealthPacket& hea = to_packet<HealthPacket>(*pkt);
-            std::cout << "id: " << hea.id << std::endl;
-            std::cout << "health: " << hea.health << std::endl;
+            fprintf(stdout, "id: %i\n", hea.id);
+            fprintf(stdout, "health: %f\n", hea.health);
             break;
         }
         case PacketType::USE: {
-            std::cout << "Packet is of type USE" << std::endl;
+            fprintf(stdout, "Packet is of type USE\n");
             UsePacket& use = to_packet<UsePacket>(*pkt);
-            std::cout << "id: " << use.id << std::endl;
-            std::cout << "use: " << use.use << std::endl;
+            fprintf(stdout, "id: %i\n", use.id);
+            fprintf(stdout, "use: %s\n", use.use.data());
             break;
         }
     }

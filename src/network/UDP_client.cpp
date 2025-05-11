@@ -1,4 +1,5 @@
-#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
@@ -42,7 +43,7 @@ private:
 int _main(int argc, char* argv[]) {
     try {
         if (argc != 2) {
-            std::cerr << "Usage: client <host>" << std::endl;
+            fprintf(stderr, "Usage: client <host>\n");
             return 1;
         }
         boost::asio::io_context ioContext;
@@ -53,12 +54,12 @@ int _main(int argc, char* argv[]) {
         
         for (;;)
         {
-            std::cout << "text received: " << udpClient.listen() << std::endl;
+            fprintf(stderr, "text received: %s\n", udpClient.listen().data());
         }
         
     }
     catch (std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        fprintf(stderr, "Error: %s\n", e.what());
     }
 
     return 0;

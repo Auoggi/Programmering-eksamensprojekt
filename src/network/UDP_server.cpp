@@ -1,4 +1,5 @@
-#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string>
 #include <sstream>
 #include <set>
@@ -91,6 +92,6 @@ int _main()
     io_context.run();
   }
   catch (std::exception& e) {
-    std::cerr << e.what() << std::endl;
+    fprintf(stderr, "Error: %s\n", e.what());
   }
 }
