@@ -117,7 +117,7 @@ void Player::tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *gr
 }
 
 void Player::onCollision(Entity *otherEntity) {
-    if(otherEntity->getType() != "projectile") this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
+    if(std::strcmp(otherEntity->getType(), "projectile") != 0) this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
 }
 
 glm::mat4 Player::getView(int screenWidth, int screenHeight) {
