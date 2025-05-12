@@ -1,5 +1,5 @@
 #include "player.h"
-#include "projektil.h"
+#include "projectile.h"
 
 Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(25.0f), dash(true), isDashing(false),
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
@@ -28,7 +28,7 @@ void Player::tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *gr
         glm::vec2 cameraPos = glm::vec2(glm::inverse(view)[3]);
         glm::vec2 worldMousePos = glm::vec2(mouseX, mouseY) + cameraPos;
 
-        Projektil *shot = new Projektil(this->pos, worldMousePos);
+        Projectile *shot = new Projectile(this->pos, worldMousePos);
         entityList->push_back(shot);
     }
 

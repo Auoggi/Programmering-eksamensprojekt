@@ -7,8 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-// Forward declaration of Projektil, as to avoid circular include
-class Projektil;
+// Forward declaration of Projectile, as to avoid circular include
+class Projectile;
 
 class Enemy: public Entity {
 public:
