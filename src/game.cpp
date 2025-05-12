@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "entity/projectile.h"
 #include "render/renderer.h"
 #include "entity/player.h"
 #include "entity/enemy.h"
@@ -53,6 +54,8 @@ int main() {
     Enemy *obstacle = new Enemy("assets/textures/ball64.png", "obstacle", 64, 64);
     obstacle->pos = glm::vec2(96, 96);
 
+    std::vector<Entity*> entityList;
+
     double currentTime = glfwGetTime();
     double lastTime = currentTime;
     double deltaTime;
@@ -78,19 +81,27 @@ int main() {
         
         int screenWidth, screenHeight;
         glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-        
-        player->tick(window, deltaTime, grid);
 
+        // Calculate view for use in player->tick
+        glm::mat4 view = player->getView(screenWidth, screenHeight);
+
+        player->tick(window, view, deltaTime, grid, &entityList);
         obstacle->tick(player, deltaTime, grid);
 
-        glm::mat4 view = player->getView(screenWidth, screenHeight);
+        // Update view for camera position
+        view = player->getView(screenWidth, screenHeight);
         glViewport(0, 0, screenWidth, screenHeight);
         glClear(GL_COLOR_BUFFER_BIT);
 
         map->draw(view);
 
         //grid->draw(view, floor(player->pos.x / tileSize), floor(player->pos.y / tileSize));
-        player->draw(renderer, view);       
+        for (Entity* entity : entityList) {
+            entity->draw(renderer, view);
+            entity->tick(grid, deltaTime);
+        }
+
+        player->draw(renderer, view);
         obstacle->draw(renderer, view);
 
         glfwSwapBuffers(window);

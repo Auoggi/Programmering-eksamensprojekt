@@ -1,10 +1,11 @@
 #include "player.h"
+#include "projectile.h"
 
 Player::Player() : Entity("assets/textures/ball.png", "player", 25, 25, 100), stamina(25.0f), dash(true), isDashing(false),
                             minDashSpeed(1000), maxDashSpeed(1600), dashCooldown(2.0f), dashTimer(0.0f), dashDuration(0.1f),
-                            staminaRegenRate(1.0f) {}
+                            staminaRegenRate(1.0f), shotCooldown(0.0f), shotDelay(0.5f) {}
 
-void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
+void Player::tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *grid, std::vector<Entity*> *entityList) {
     glm::vec2 direction = glm::vec2(0, 0);
 
     // If statements that detects user input
@@ -19,6 +20,26 @@ void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
     }
     if(glfwGetKey(window, GLFW_KEY_A)) {
         direction += glm::vec2(-1, 0);
+    }
+    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+
+        if(this->shotCooldown <= 0.0f) {
+            double mouseX, mouseY;
+            glfwGetCursorPos(window, &mouseX, &mouseY);
+
+            glm::vec2 cameraPos = glm::vec2(glm::inverse(view)[3]);
+            glm::vec2 worldMousePos = glm::vec2(mouseX, mouseY) + cameraPos;
+
+            Projectile *shot = new Projectile(this->pos, worldMousePos);
+            entityList->push_back(shot);
+
+            // Reset shotCooldown
+            this->shotCooldown = this->shotDelay;
+
+        } else {
+            this->shotCooldown -= deltaTime;
+        }
+        
     }
 
     // Dashing feature and player movement
@@ -106,7 +127,7 @@ void Player::tick(GLFWwindow *window, double deltaTime, Grid *grid) {
 }
 
 void Player::onCollision(Entity *otherEntity) {
-
+    if(std::strcmp(otherEntity->getType(), "projectile") != 0) this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
 }
 
 glm::mat4 Player::getView(int screenWidth, int screenHeight) {

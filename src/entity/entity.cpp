@@ -53,11 +53,11 @@ bool Entity::collisionDetection(Entity *entity) {
 }
 
 void Entity::onCollision(Entity *otherEntity) {
-    this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
+    //this->velocity = glm::normalize(this->velocity + otherEntity->velocity) * this->speed;
 }
 
 void Entity::handleCollision(Grid *grid) {
-    // loop through current and adjacent grid spaces
+    // loop through current and adjacent grid spacesp
     for(int dx = -1; dx <= 1; dx++) {
         for(int dy = -1; dy <= 1; dy++) {
             glm::ivec2 currSelectedTile = this->currTilePos + glm::ivec2(dx, dy);
