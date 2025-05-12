@@ -18,9 +18,9 @@ public:
     glm::vec2 pos, velocity;
     Texture texture;
 
-    Entity(const char *texture, const char *textureName, int width, int height, int health);
-
     virtual const char* getType() const {return "";} 
+
+    Entity(const char *texture, const char *textureName, int width, int height, int health);
 
     void handleCollision(Grid *grid);
     glm::ivec2 getTileCoords(Grid *grid);
