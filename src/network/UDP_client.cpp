@@ -1,4 +1,5 @@
-#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
@@ -19,7 +20,7 @@ public:
         socket_.send_to(boost::asio::buffer("\0"), receiverEndpoint);
     }
 
-    void send_message(std::string text) {
+    void sendMessage(std::string text) {
         socket_.send_to(boost::asio::buffer(text), receiverEndpoint);
     }
 
@@ -35,30 +36,30 @@ private:
     udp::resolver resolver;
     udp::endpoint receiverEndpoint;
     udp::endpoint senderEndpoint;
-    boost::array<char, 128> recvBuf;
+    boost::array<char, 2048> recvBuf;
 };
 
 
-int main(int argc, char* argv[]) {
+int _main(int argc, char* argv[]) {
     try {
         if (argc != 2) {
-            std::cerr << "Usage: client <host>" << std::endl;
+            fprintf(stderr, "Usage: client <host>\n");
             return 1;
         }
         boost::asio::io_context ioContext;
 
         udpClient udpClient(ioContext);
         udpClient.connect(argv[1], "8080");
-        udpClient.send_message("HI");
+        udpClient.sendMessage("HI");
         
         for (;;)
         {
-            std::cout << "text received: " << udpClient.listen() << std::endl;
+            fprintf(stderr, "text received: %s\n", udpClient.listen().data());
         }
         
     }
     catch (std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        fprintf(stderr, "Error: %s\n", e.what());
     }
 
     return 0;
