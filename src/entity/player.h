@@ -12,7 +12,7 @@ class Projectile;
 
 class Player: public Entity {
 public:
-    float dashSpeed, maxDashSpeed, minDashSpeed, dashCooldown, dashTimer, dashDuration, stamina, staminaRegenRate;
+    float dashSpeed, maxDashSpeed, minDashSpeed, dashCooldown, dashTimer, dashDuration, stamina, staminaRegenRate, shotCooldown, shotDelay;
     bool dash, isDashing;
 
     virtual const char* getType() const {return "player";}
