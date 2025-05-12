@@ -9,10 +9,12 @@
 
 class Projektil : public Entity {
 public:
+    virtual const char* getType() const {return "projectile";}
+
     Projektil(glm::vec2 startPos, glm::vec2 targetPos);
 
     void tick(Grid *grid, double deltaTime);
-    void onCollision(Entity *otherEntity);
+    void onCollision(Entity *otherEntity) override;
 };
 
 #endif

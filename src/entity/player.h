@@ -15,11 +15,13 @@ public:
     float dashSpeed, maxDashSpeed, minDashSpeed, dashCooldown, dashTimer, dashDuration, stamina, staminaRegenRate;
     bool dash, isDashing;
 
+    virtual const char* getType() const {return "player";}
+
     Player();
 
     void tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *grid, std::vector<Entity*> *entityList);
     glm::mat4 getView(int width, int height);
-    void onCollision(Entity *otherEntity);
+    void onCollision(Entity *otherEntity) override;
 };
 
 #endif

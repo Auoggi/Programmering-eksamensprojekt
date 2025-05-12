@@ -12,6 +12,6 @@ void Projektil::tick(Grid *grid, double deltaTime) {
     Entity::tick(grid, deltaTime);
 }
 
-void Projektil::onCollision(Entity *otherEnity) {
-
+void Projektil::onCollision(Entity *otherEntity) {
+    if(std::strcmp(otherEntity->getType(), "player") != 0);
 }

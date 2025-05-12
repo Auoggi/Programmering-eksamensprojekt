@@ -12,10 +12,12 @@ class Projektil;
 
 class Enemy: public Entity {
 public:
+    virtual const char* getType() const {return "enemy";};
+
     Enemy(const char *image, const char *name, int witdh, int heigt);
 
     void tick(Entity *target, double deltaTime, Grid *grid);
-    void onCollision(Entity *otherEntity);
+    void onCollision(Entity *otherEntity) override;
 };
 
 #endif

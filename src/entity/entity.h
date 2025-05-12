@@ -5,6 +5,7 @@
 #include "../render/renderer.h"
 #include "../grid/grid.h"
 
+#include <cstring>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,14 +20,15 @@ public:
 
     Entity(const char *texture, const char *textureName, int width, int height, int health);
 
-    glm::ivec2 getTileCoords(Grid *grid);
+    virtual const char* getType() const {return "";} 
 
     void handleCollision(Grid *grid);
-    float distanceTo(Entity *otherEntity);
-    void onCollision(Entity *otherEntity); 
+    glm::ivec2 getTileCoords(Grid *grid);
+    float distanceTo(Entity *otherEntity); 
     void tick(Grid *grid, double deltaTime);
     bool collisionDetection(Entity *entity);
     void draw(Renderer *renderer, glm::mat4 view);
+    virtual void onCollision(Entity *otherEntity);
 };
 
 #endif
