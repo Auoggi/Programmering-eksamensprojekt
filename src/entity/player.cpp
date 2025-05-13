@@ -35,11 +35,7 @@ void Player::tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *gr
 
             // Reset shotCooldown
             this->shotCooldown = this->shotDelay;
-
-        } else {
-            this->shotCooldown -= deltaTime;
         }
-        
     }
 
     // Dashing feature and player movement
@@ -120,7 +116,12 @@ void Player::tick(GLFWwindow *window, glm::mat4 view, double deltaTime, Grid *gr
     if(this->stamina < 25) {
         this->stamina += this->staminaRegenRate * deltaTime;
         if(this->stamina > 25) this->stamina = 25.0f;
-    } 
+    }
+
+    // Projectile cooldown management
+    if(this->shotCooldown > 0.0f) {
+        this->shotCooldown -= deltaTime;
+    }
 
     // Call parrent tick function
     Entity::tick(grid, deltaTime);
