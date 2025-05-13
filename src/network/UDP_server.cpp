@@ -83,7 +83,7 @@ private:
     std::set<udp::endpoint> clients;
 };
 
-int main()
+int _main()
 {
   try {
     boost::asio::io_context io_context;
