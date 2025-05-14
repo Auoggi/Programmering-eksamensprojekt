@@ -9,7 +9,7 @@ BUILD_DIR := .build
 MAIN_FILE := game
 
 CXXFLAGS := -g -I include
-FLAGS := $(CXXFLAGS) $(shell pkg-config --static --libs glfw3 gl)
+FLAGS := $(CXXFLAGS) $(shell pkg-config --static --libs glfw3 gl) -I ./boost/linux/include
 DEPS := include/glad/glad.o $(patsubst %.cpp, %.o, $(shell fdfind -e cpp -e h . $(SRC_DIR)))
 CXX := g++
 LD := ld
@@ -19,7 +19,7 @@ SHADER_SYMBOLS_FILE := $(SHADER_DIR)/shader_symbols.h
 SHADERS := $(patsubst %.glsl, %.o, $(shell fdfind -e glsl . $(SHADER_DIR)))
 DEPS += $(SHADERS) $(SHADER_SYMBOLS_FILE)
 
-%.exe %.exe.o: FLAGS := $(CXXFLAGS) ./include/GLFW/lib-mingw-w64/libglfw3.a -lopengl32 -lgdi32
+%.exe %.exe.o: FLAGS := $(CXXFLAGS) ./include/GLFW/lib-mingw-w64/libglfw3.a -lopengl32 -lgdi32 -I boost/windows/include -Lboost/windows/lib -lboost_system -l ws2_32
 %.exe %.exe.o: CXX := x86_64-w64-mingw32-g++
 %.exe %.exe.o: LD := x86_64-w64-mingw32-ld
 
@@ -34,7 +34,7 @@ $(BUILD_DIR)/%.exe: $(SHADER_SYMBOLS_FILE) $(SRC_DIR)/%.exe.o $(DEPS:.o=.exe.o)
 	$(compile)
 
 %.o %.exe.o: %.cpp
-	$(CXX) -c $(CXXFLAGS) $^ -o $@
+	$(CXX) -c $(FLAGS) $^ -o $@
 
 $(SHADER_DIR)/%.o $(SHADER_DIR)/%.exe.o: $(SHADER_DIR)/%.glsl
 	$(LD) -r -b binary -o $@ $<
