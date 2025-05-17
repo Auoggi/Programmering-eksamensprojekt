@@ -3,24 +3,24 @@
 #include "UDP_client.h"
 
 
-udpClient::udpClient(boost::asio::io_context& ioContext)
+UdpClient::UdpClient(boost::asio::io_context& ioContext)
     : socket_(ioContext),
         resolver(ioContext) // DNS lookup like gets ip address from website link
 {
     socket_.open(udp::v4());
 }
 
-void udpClient::connect(std::string ipv4, std::string port) {
+void UdpClient::connect(std::string ipv4, std::string port) {
     receiverEndpoint = *resolver.resolve(udp::v4(), ipv4, port).begin(); // gets ip address and port for server
 
     socket_.send_to(boost::asio::buffer("\0"), receiverEndpoint);
 }
 
-void udpClient::sendMessage(std::string text) {
+void UdpClient::sendMessage(std::string text) {
     socket_.send_to(boost::asio::buffer(text), receiverEndpoint);
 }
 
-std::string udpClient::listen() {
+std::string UdpClient::listen() {
     size_t len = socket_.receive_from(boost::asio::buffer(recvBuf), senderEndpoint); // len is number of bytes transferred
 
     recvBuf.at(len) = '\0';
@@ -36,13 +36,13 @@ int _main(int argc, char* argv[]) {
         }
         boost::asio::io_context ioContext;
 
-        udpClient udpClient(ioContext);
-        udpClient.connect(argv[1], "8080");
-        udpClient.sendMessage("HI");
+        UdpClient UdpClient(ioContext);
+        UdpClient.connect(argv[1], "8080");
+        UdpClient.sendMessage("HI");
         
         for (;;)
         {
-            fprintf(stderr, "text received: %s\n", udpClient.listen().data());
+            fprintf(stderr, "text received: %s\n", UdpClient.listen().data());
         }
         
     }

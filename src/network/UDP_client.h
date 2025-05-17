@@ -6,9 +6,10 @@
 
 using boost::asio::ip::udp;
 
-class udpClient {
+class UdpClient {
 public:
-    udpClient(boost::asio::io_context& ioContext);
+    UdpClient(boost::asio::io_context& ioContext);
+    
     void connect(std::string ipv4, std::string port);
     void sendMessage(std::string text);
     std::string listen();
