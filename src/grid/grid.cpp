@@ -30,11 +30,32 @@ Grid::Grid(int tileSize, float screenWidth, float screenHeight) : tileSize(tileS
 
 std::shared_ptr<std::vector<Entity*>> Grid::getEntityList(const glm::ivec2& pos) {
     // Check if entityMap contains pos, returns true if it does not contain pos
-    if(entityMap.find(pos) == entityMap.end()) {
-        entityMap[pos] = std::make_shared<std::vector<Entity*>>(); // Create new vector at pos in entityMap
+    if(this->entityMap.find(pos) == this->entityMap.end()) {
+        this->entityMap[pos] = std::make_shared<std::vector<Entity*>>(); // Create new vector at pos in entityMap
     }
-    return entityMap[pos];
+    return this->entityMap[pos];
 }
+
+void Grid::removeEntity(const glm::ivec2 &pos, Entity *entity) {
+    auto it = this->entityMap.find(pos);
+    if(it == entityMap.end()) return;
+    
+    auto &entityList = *(it->second); // Accesses the list of entities stored in the map
+
+    for (auto currentEntity = entityList.begin(); currentEntity != entityList.end(); currentEntity++) {
+        if(*currentEntity == entity) {
+            entityList.erase(currentEntity);
+
+            if(entityList.empty()) {
+                entityMap.erase(it);
+            }
+
+            return;
+        }
+    }
+
+}
+
 
 void Grid::draw(glm::mat4 view, int centerTileX, int centerTileY) {
     this->shader.use();

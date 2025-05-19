@@ -32,6 +32,7 @@ public:
 
     Grid(const int tileSize, float screenWidth, float screenHeight);
     void draw(glm::mat4 view, int centerTileX, int centerTileY);
+    void removeEntity(const glm::ivec2 &pos, Entity *entity);
 };
 
 #endif
