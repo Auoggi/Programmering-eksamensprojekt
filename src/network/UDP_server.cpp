@@ -70,14 +70,8 @@ void UdpServer::messageInInterval() {
     timer.async_wait(boost::bind(&UdpServer::messageInInterval, this));
 }
 
-boost::asio::steady_timer timer;
-udp::socket socket;
-udp::endpoint currentClient; // client who recently send a packet
-boost::array<char, 2048> recvBuffer;
-std::set<udp::endpoint> clients;
 
-
-int _main()
+int server_main()
 {
   try {
     boost::asio::io_context io_context;
@@ -88,3 +82,4 @@ int _main()
     fprintf(stderr, "Error: %s\n", e.what());
   }
 }
+

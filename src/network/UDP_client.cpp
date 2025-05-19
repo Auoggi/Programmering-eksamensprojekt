@@ -28,7 +28,7 @@ std::string UdpClient::listen() {
 }
 
 
-int _main(int argc, char* argv[]) {
+int client_main(int argc, char* argv[]) {
     try {
         if (argc != 2) {
             fprintf(stderr, "Usage: client <host>\n");
