@@ -1,193 +1,116 @@
-#include <string>
-#include <memory>
-#include <cstring>
-#include <vector>
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "byte_buffer.h"
+#include "packets.h"
+
 //https://chatgpt.com/share/68163d5f-c924-8003-97de-ff7cd7625af8
 
-enum class PacketType : uint16_t {
-    MOVEMENT,
-    ATTACK,
-    STAMINA,
-    HEALTH,
-    USE,
-};
-
-class ByteBuffer {
-public:
-    std::vector<char> data;
-    size_t read_offset = 0;
-
-    // inserts data into the vector in the form of bytes
-    template<typename T>
-    void put(T value) { 
-        static_assert(std::is_trivially_copyable_v<T>, "Only trivial types allowed");
-        char* p = reinterpret_cast<char*>(&value); // reinterprets the values bytes to be the type specified (so as a char*)
-        data.insert(data.end(), p, p + sizeof(T));
-    }
-
-    // copies data from vector and puts it into specified type
-    template<typename T>
-    T read() { 
-        static_assert(std::is_trivially_copyable_v<T>, "Only trivial types allowed");
-        if (read_offset + sizeof(T) > data.size()) {
-            throw "Read past end of buffer";
-        }
-
-        T value;
-        std::memcpy(&value, &data[read_offset], sizeof(T));
-        read_offset += sizeof(T);
-        return value;
-    }
-
-    void reset() { read_offset = 0; }
-
-    const char* raw() const { return data.data(); }
-    size_t size() const { return data.size(); }
-};
-
-// packet:
-// [ length: 4-byte ][ type: 1-byte ][ payload... ]
-class Packet {
-public:
-    // virtual keyword is used to support runtime polymorphism, 
-    // so the compiler knows to use the child methods rather than the parent methods with a vtable
-    virtual ~Packet() = default;
-    virtual PacketType type() const = 0;
-    // will make packet contents to a string
-    virtual std::string serialize() const = 0; 
-    // parses string contents to make it a packet
-    static std::unique_ptr<Packet> deserialize(std::string str); // unique_ptr is used so that you can use base methods like type
+template<typename T>
+T& to_packet(Packet& pkt) {
+    return dynamic_cast<T&>(pkt); // Will throw std::bad_cast if type mismatch
 };
 
 // contains x and y position
-class MovementPacket : public Packet {
-public:
-    MovementPacket(int id, float x, float y)
-        : id(id), x(x), y(y) {}
-    
-    PacketType type() const override { return PacketType::MOVEMENT; }
+MovementPacket::MovementPacket(int id, float x, float y)
+    : id(id), x(x), y(y) {}
 
-    std::string serialize() const override {
-        ByteBuffer buffer;
-        uint32_t payload_size = sizeof(id) + sizeof(x) + sizeof(y);
+PacketType MovementPacket::type() const { return PacketType::MOVEMENT; }
 
-        buffer.put<uint32_t>(payload_size);
-        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
-        buffer.put<int>(id);
-        buffer.put<float>(x);
-        buffer.put<float>(y);
+std::string MovementPacket::serialize() const {
+    ByteBuffer buffer;
+    uint32_t payload_size = sizeof(id) + sizeof(x) + sizeof(y);
 
-        std::string str(buffer.data.begin(), buffer.data.end());
-        return str;
-    }
+    buffer.put<uint32_t>(payload_size);
+    buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+    buffer.put<int>(id);
+    buffer.put<float>(x);
+    buffer.put<float>(y);
 
-    int id;
-    float x, y;
-};
+    std::string str(buffer.data.begin(), buffer.data.end());
+    return str;
+}
 
 // contains angle and attacktype
-class AttackPacket : public Packet {
-public:
-    AttackPacket(int id, float attackType, float angle)
-        : id(id), attackType(attackType), angle(angle) {}
+AttackPacket::AttackPacket(int id, float attackType, float angle)
+    : id(id), attackType(attackType), angle(angle) {}
 
-    PacketType type() const override { return PacketType::ATTACK; }
+PacketType AttackPacket::type() const { return PacketType::ATTACK; }
 
-    std::string serialize() const override {
-        ByteBuffer buffer;
-        uint32_t payload_size = sizeof(id) + sizeof(attackType) + sizeof(angle);
+std::string AttackPacket::serialize() const {
+    ByteBuffer buffer;
+    uint32_t payload_size = sizeof(id) + sizeof(attackType) + sizeof(angle);
 
-        buffer.put<uint32_t>(payload_size);
-        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
-        buffer.put<int>(id);
-        buffer.put<int>(attackType);
-        buffer.put<float>(angle);
+    buffer.put<uint32_t>(payload_size);
+    buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+    buffer.put<int>(id);
+    buffer.put<int>(attackType);
+    buffer.put<float>(angle);
 
-        std::string str(buffer.data.begin(), buffer.data.end());
-        return str;
-    }
-    
-    int id, attackType;
-    float angle;
-};
+    std::string str(buffer.data.begin(), buffer.data.end());
+    return str;
+}
 
 // contains current stamina
-class StaminaPacket : public Packet {
-public:
-    StaminaPacket(int id, float stamina)
-        : id(id), stamina(stamina) {}
 
-    PacketType type() const override { return PacketType::STAMINA; }
+StaminaPacket::StaminaPacket(int id, float stamina)
+    : id(id), stamina(stamina) {}
 
-    std::string serialize() const override {
-        ByteBuffer buffer;
-        uint32_t payload_size = sizeof(id) + sizeof(stamina);
+PacketType StaminaPacket::type() const { return PacketType::STAMINA; }
 
-        buffer.put<uint32_t>(payload_size);
-        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
-        buffer.put<int>(id);
-        buffer.put<float>(stamina);
+std::string StaminaPacket::serialize() const {
+    ByteBuffer buffer;
+    uint32_t payload_size = sizeof(id) + sizeof(stamina);
 
-        std::string str(buffer.data.begin(), buffer.data.end());
-        return str;
-    }
-    
-    int id;
-    float stamina;
-};
+    buffer.put<uint32_t>(payload_size);
+    buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+    buffer.put<int>(id);
+    buffer.put<float>(stamina);
+
+    std::string str(buffer.data.begin(), buffer.data.end());
+    return str;
+}
 
 // contains current health
-class HealthPacket : public Packet {
-public:
-    HealthPacket(int id, float health)
-        : id(id), health(health) {}
 
-    PacketType type() const override { return PacketType::HEALTH; }
+HealthPacket::HealthPacket(int id, float health)
+    : id(id), health(health) {}
 
-    std::string serialize() const override {
-        ByteBuffer buffer;
-        uint32_t payload_size = sizeof(id) + sizeof(health);
+PacketType HealthPacket::type() const { return PacketType::HEALTH; }
 
-        buffer.put<uint32_t>(payload_size);
-        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
-        buffer.put<int>(id);
-        buffer.put<float>(health);
+std::string HealthPacket::serialize() const {
+    ByteBuffer buffer;
+    uint32_t payload_size = sizeof(id) + sizeof(health);
 
-        std::string str(buffer.data.begin(), buffer.data.end());
-        return str;
-    }
-    
-    int id;
-    float health;
-};
+    buffer.put<uint32_t>(payload_size);
+    buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+    buffer.put<int>(id);
+    buffer.put<float>(health);
+
+    std::string str(buffer.data.begin(), buffer.data.end());
+    return str;
+}
+
 
 // contains item used
-class UsePacket : public Packet {
-public:
-    UsePacket(int id, std::string use)
-        : id(id), use(use) {}
+UsePacket::UsePacket(int id, std::string use)
+    : id(id), use(use) {}
 
-    PacketType type() const override { return PacketType::USE; }
+PacketType UsePacket::type() const { return PacketType::USE; }
 
-    std::string serialize() const override {
-        ByteBuffer buffer;
-        uint32_t payload_size = sizeof(id) + use.size();
+std::string UsePacket::serialize() const {
+    ByteBuffer buffer;
+    uint32_t payload_size = sizeof(id) + use.size();
 
-        buffer.put<uint32_t>(payload_size);
-        buffer.put<uint16_t>(static_cast<uint16_t>(type()));
-        buffer.put<int>(id);
-        buffer.data.insert(buffer.data.end(), use.begin(), use.end());
+    buffer.put<uint32_t>(payload_size);
+    buffer.put<uint16_t>(static_cast<uint16_t>(type()));
+    buffer.put<int>(id);
+    buffer.data.insert(buffer.data.end(), use.begin(), use.end());
 
-        std::string str(buffer.data.begin(), buffer.data.end());
-        return str;
-    }
-    
-    int id;
-    std::string use;
-};
+    std::string str(buffer.data.begin(), buffer.data.end());
+    return str;
+}
+
 
 std::unique_ptr<Packet> Packet::deserialize(std::string str) {
     ByteBuffer buffer;
@@ -231,13 +154,7 @@ std::unique_ptr<Packet> Packet::deserialize(std::string str) {
     };
 }
 
-// will make the unique pointer to the type specified
-template<typename T>
-T& to_packet(Packet& pkt) {
-    return dynamic_cast<T&>(pkt); // Throws if wrong type
-}
-
-int _main() {
+int main() {
     UsePacket packet(2, "hello");
 
     std::string packet_string = packet.serialize();
